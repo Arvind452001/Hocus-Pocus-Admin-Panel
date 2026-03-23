@@ -1,29 +1,52 @@
 import React, { useEffect, useState } from "react";
 
 const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
+  const isView = mode === "view";
+  const isEdit = mode === "edit";
+  const isAdd = mode === "add";
+
   const [form, setForm] = useState({
-    title: "",
-    type: "TAROT",
-    status: "Active",
-    image: "",
+    name: "",
+    turkish_name: "",
+    card_number: "",
+    arcana: "Major",
+    suit: "",
+    element: "",
+    meaning: "",
+    keywords: "",
+    upright_meaning: "",
+    reversed_meaning: "",
     file: null,
   });
 
+  // ✅ Set data for edit + view
   useEffect(() => {
-    if (selectedData && mode === "edit") {
+    if (selectedData) {
       setForm({
-        title: selectedData.title || "",
-        type: selectedData.type || "TAROT",
-        status: selectedData.status || "Active",
-        image: selectedData.image || "",
+        name: selectedData.name || "",
+        turkish_name: selectedData.turkish_name || "",
+        card_number: selectedData.card_number || "",
+        arcana: selectedData.arcana || "Major",
+        suit: selectedData.suit || "",
+        element: selectedData.element || "",
+        meaning: selectedData.meaning || "",
+        keywords: selectedData.keywords || "",
+        upright_meaning: selectedData.upright_meaning || "",
+        reversed_meaning: selectedData.reversed_meaning || "",
         file: null,
       });
     } else {
       setForm({
-        title: "",
-        type: "TAROT",
-        status: "Active",
-        image: "",
+        name: "",
+        turkish_name: "",
+        card_number: "",
+        arcana: "Major",
+        suit: "",
+        element: "",
+        meaning: "",
+        keywords: "",
+        upright_meaning: "",
+        reversed_meaning: "",
         file: null,
       });
     }
@@ -31,11 +54,11 @@ const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFile = (e) => {
-    setForm({ ...form, file: e.target.files[0] });
+    setForm((prev) => ({ ...prev, file: e.target.files[0] }));
   };
 
   const handleSubmit = () => {
@@ -48,107 +71,189 @@ const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
     <>
       {/* BACKDROP */}
       <div
+        onClick={onClose}
         style={{
           position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
+          inset: 0,
           background: "rgba(0,0,0,0.4)",
           backdropFilter: "blur(4px)",
           zIndex: 1040,
         }}
-        onClick={onClose}
       />
 
       {/* MODAL */}
       <div className="modal d-block" style={{ zIndex: 1050 }}>
-        <div className="modal-dialog modal-dialog-centered">
-          <div
-            className="modal-content"
-            style={{ borderRadius: "12px", border: "none" }}
-          >
-            <div className="modal-header py-3 px-4">
-              <h5 className="fw-bold">
-                {mode === "add" ? "Add Card" : "Edit Card"}
-              </h5>
+        <div className="modal-dialog modal-lg modal-dialog-centered">
+          <div className="modal-content">
 
+            {/* HEADER */}
+            <div className="modal-header">
+              <h5 className="fw-bold">
+                {isAdd && "Add Card"}
+                {isEdit && "Edit Card"}
+                {isView && "View Card"}
+              </h5>
               <button className="btn-close" onClick={onClose}></button>
             </div>
 
-            <div className="modal-body p-4">
-              {/* Title */}
-              <div className="mb-3">
-                <label className="form-label small">Card Title</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="title"
-                  value={form.title}
-                  onChange={handleChange}
-                />
-              </div>
-
+            {/* BODY */}
+            <div className="modal-body">
               <div className="row">
-                {/* Type */}
+
+                {/* Name */}
                 <div className="col-md-6 mb-3">
-                  <label className="form-label small">System Type</label>
+                  <label className="form-label">Name</label>
+                  <input
+                    className="form-control"
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                    disabled={isView}
+                  />
+                </div>
+
+                {/* Turkish Name */}
+                <div className="col-md-6 mb-3">
+                  <label className="form-label">Turkish Name</label>
+                  <input
+                    className="form-control"
+                    name="turkish_name"
+                    value={form.turkish_name}
+                    onChange={handleChange}
+                    disabled={isView}
+                  />
+                </div>
+
+                {/* Card Number */}
+                <div className="col-md-4 mb-3">
+                  <label className="form-label">Card Number</label>
+                  <input
+                    className="form-control"
+                    name="card_number"
+                    value={form.card_number}
+                    onChange={handleChange}
+                    disabled={isView}
+                  />
+                </div>
+
+                {/* Arcana */}
+                <div className="col-md-4 mb-3">
+                  <label className="form-label">Arcana</label>
                   <select
                     className="form-select"
-                    name="type"
-                    value={form.type}
+                    name="arcana"
+                    value={form.arcana}
                     onChange={handleChange}
+                    disabled={isView}
                   >
-                    <option value="TAROT">Tarot</option>
-                    <option value="KATINA">Katina</option>
+                    <option value="Major">Major</option>
+                    <option value="Minor">Minor</option>
                   </select>
                 </div>
 
-                {/* Status */}
-                <div className="col-md-6 mb-3">
-                  <label className="form-label small">Status</label>
-                  <select
-                    className="form-select"
-                    name="status"
-                    value={form.status}
+                {/* Suit */}
+                <div className="col-md-4 mb-3">
+                  <label className="form-label">Suit</label>
+                  <input
+                    className="form-control"
+                    name="suit"
+                    value={form.suit}
                     onChange={handleChange}
-                  >
-                    <option>Active</option>
-                    <option>Pending</option>
-                    <option>Disabled</option>
-                  </select>
+                    disabled={isView}
+                  />
                 </div>
-              </div>
 
-              {/* Image URL */}
-              <div className="mb-2">
-                <input
-                  type="text"
-                  className="form-control"
-                  name="image"
-                  placeholder="Image URL"
-                  value={form.image}
-                  onChange={handleChange}
-                />
-              </div>
+                {/* Element */}
+                <div className="col-md-4 mb-3">
+                  <label className="form-label">Element</label>
+                  <input
+                    className="form-control"
+                    name="element"
+                    value={form.element}
+                    onChange={handleChange}
+                    disabled={isView}
+                  />
+                </div>
 
-              {/* File */}
-              <input
-                type="file"
-                className="form-control"
-                onChange={handleFile}
-              />
+                {/* Keywords */}
+                <div className="col-md-8 mb-3">
+                  <label className="form-label">Keywords</label>
+                  <input
+                    className="form-control"
+                    name="keywords"
+                    value={form.keywords}
+                    onChange={handleChange}
+                    disabled={isView}
+                  />
+                </div>
+
+                {/* Meaning */}
+                <div className="col-md-12 mb-3">
+                  <label className="form-label">Meaning</label>
+                  <textarea
+                    className="form-control"
+                    rows="2"
+                    name="meaning"
+                    value={form.meaning}
+                    onChange={handleChange}
+                    disabled={isView}
+                  />
+                </div>
+
+                {/* Upright */}
+                <div className="col-md-6 mb-3">
+                  <label className="form-label">Upright Meaning</label>
+                  <textarea
+                    className="form-control"
+                    rows="3"
+                    name="upright_meaning"
+                    value={form.upright_meaning}
+                    onChange={handleChange}
+                    disabled={isView}
+                  />
+                </div>
+
+                {/* Reversed */}
+                <div className="col-md-6 mb-3">
+                  <label className="form-label">Reversed Meaning</label>
+                  <textarea
+                    className="form-control"
+                    rows="3"
+                    name="reversed_meaning"
+                    value={form.reversed_meaning}
+                    onChange={handleChange}
+                    disabled={isView}
+                  />
+                </div>
+
+                {/* File Upload */}
+                {!isView && (
+                  <div className="col-md-12 mb-3">
+                    <label className="form-label">Upload Image</label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      onChange={handleFile}
+                    />
+                  </div>
+                )}
+
+              </div>
             </div>
 
-            <div className="modal-footer bg-light">
+            {/* FOOTER */}
+            <div className="modal-footer">
               <button className="btn btn-secondary" onClick={onClose}>
                 Close
               </button>
 
-              <button className="btn btn-primary" onClick={handleSubmit}>
-                {mode === "add" ? "Save" : "Update"}
-              </button>
+              {!isView && (
+                <button className="btn btn-primary" onClick={handleSubmit}>
+                  {isAdd ? "Save" : "Update"}
+                </button>
+              )}
             </div>
+
           </div>
         </div>
       </div>

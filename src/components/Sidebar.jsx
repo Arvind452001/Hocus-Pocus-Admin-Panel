@@ -133,15 +133,20 @@ function Sidebar() {
           <span className="nav-text">Dreams</span>
         </NavLink>
 
-        {/* <NavLink to="/cards" className="nav-link d-flex align-items-center">
-          <i className="bi bi-grid me-2"></i>
-          <span className="nav-text">Cards</span>
-        </NavLink> */}
+      <NavLink to="/cards" className="nav-link d-flex align-items-center">
+  <i className="bi bi-collection me-2"></i>
+  <span className="nav-text">Cards</span>
+</NavLink>
 
-        {/* <NavLink to="/tarotCards" className="nav-link d-flex align-items-center">
-          <i className="bi bi-grid me-2"></i>
-          <span className="nav-text">TarotCards</span>
-        </NavLink> */}
+<NavLink to="/tarotCards" className="nav-link d-flex align-items-center">
+  <i className="bi bi-stars me-2"></i>
+  <span className="nav-text">Tarot Cards</span>
+</NavLink>
+
+<NavLink to="/katinaCards" className="nav-link d-flex align-items-center">
+  <i className="bi bi-gem me-2"></i>
+  <span className="nav-text">Katina Cards</span>
+</NavLink>
       </nav>
     </aside>
   );

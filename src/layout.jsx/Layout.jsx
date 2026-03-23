@@ -3,16 +3,14 @@ import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import { useSidebar } from "../App";
 
-
-
 function Layout() {
   const { sidebarCollapsed } = useSidebar();
 
   return (
-    <div className="admin-app">
+    <div className="admin-app d-flex">
       <Sidebar />
-      <div className="content">
-        <Header title="Dashboard" />
+      <div className={`content ${sidebarCollapsed ? "collapsed" : ""}`}>
+        <Header />
         <main>
           <Outlet />
         </main>
@@ -20,6 +18,5 @@ function Layout() {
     </div>
   );
 }
-
 
 export default Layout;

@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import Sidebar from "../components/Sidebar";
-import Header from "../components/Header";
 
 const Adduser = () => {
 
@@ -33,20 +31,13 @@ const Adduser = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log("User Data:", formData);
+    // console.log("User Data:", formData);
 
     // API call here
   };
 
   return (
-    <div className="admin-app">
-
-      <Sidebar />
-
-      <div className="content">
-        <Header title="Add User" />
-
-        <main className="container-fluid">
+   <main className="container-fluid">
           <div className="page-section">
 
             <div className="card">
@@ -207,8 +198,6 @@ const Adduser = () => {
 
           </div>
         </main>
-      </div>
-    </div>
   );
 };
 

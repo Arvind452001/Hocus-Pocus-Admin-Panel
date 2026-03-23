@@ -21,7 +21,7 @@ function Header({ title }) {
     <header
       style={{
         width: "100%",
-        marginBottom: "20px",
+        marginBottom: "0px",
         background: "#fff",
         borderBottom: "1px solid rgba(0,0,0,.08)",
       }}

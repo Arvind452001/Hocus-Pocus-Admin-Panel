@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
-import Header from "../components/Header";
 import {
   blockUserApi,
   deleteUserApi,
@@ -19,7 +17,7 @@ const Users = () => {
   // ✅ NEW STATES
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  console.log("users", users);
+  // console.log("users", users);
   const navigate = useNavigate();
   /* ================= FETCH USERS ================= */
 
@@ -38,7 +36,7 @@ const Users = () => {
         sort_by: "newest",
       });
 
-      console.log(res?.data?.users);
+      // console.log(res?.data?.users);
 
       const data = res?.data?.users || [];
       setUsers(data);
@@ -115,13 +113,8 @@ const handleToggleUser = async (user) => {
   });
   console.log("filteredUsers", filteredUsers);
   return (
-    <div className="admin-app">
-      <Sidebar />
-
-      <div className="content">
-        <Header title="Users" />
-
-        <main className="container-fluid mr-4">
+    <div className="">
+     <main className="container-fluid mr-4">
           <div className="page-section">
             <div className="card">
               <div className="card-body">
@@ -301,7 +294,6 @@ const handleToggleUser = async (user) => {
             </div>
           </div>
         </main>
-      </div>
     </div>
   );
 };

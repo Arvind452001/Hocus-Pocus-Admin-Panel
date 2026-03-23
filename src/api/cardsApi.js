@@ -1,9 +1,12 @@
+import axiosFormData from "./axiosFormData";
 import axiosJSONData from "./axiosJSONData";
 
 
 // 🔹 GET All Cards
-export const getCardsApi = async () => {
-  return axiosJSONData.get("/admin/cards");
+export const getCardsApi = (params) => {
+  return axiosJSONData.get("/admin/cards", {
+    params: params,
+  });
 };
 
 
@@ -13,15 +16,14 @@ export const getCardByIdApi = async (cardId) => {
 };
 
 
-// 🔹 CREATE Card (Upload)
-export const createCardApi = async (data) => {
-  return axiosJSONData.post("/admin/card", data);
+// CREATE
+export const createCardApi = (formData) => {
+  return axiosFormData.post("/admin/card", formData);
 };
 
-
-// 🔹 UPDATE Card
-export const updateCardApi = async (cardId, data) => {
-  return axiosJSONData.put(`/admin/cards/${cardId}`, data);
+// UPDATE
+export const updateCardApi = (id, formData) => {
+  return axiosFormData.put(`/admin/cards/${id}/`, formData);
 };
 
 

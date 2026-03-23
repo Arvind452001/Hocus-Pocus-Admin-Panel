@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import Sidebar from "../components/Sidebar";
-import Header from "../components/Header";
 
 const AiPromptManegement = () => {
 
@@ -21,13 +19,7 @@ const AiPromptManegement = () => {
     .slice(0, entries);
 
   return (
-    <div className="admin-app">
-      <Sidebar />
-
-      <div className="content">
-        <Header title="AI Prompt" />
-
-        <main className="container-fluid">
+    <main className="container-fluid">
           <div className="page-section">
             <div className="card">
               <div className="card-body">
@@ -132,9 +124,6 @@ const AiPromptManegement = () => {
             </div>
           </div>
         </main>
-
-      </div>
-    </div>
   );
 };
 

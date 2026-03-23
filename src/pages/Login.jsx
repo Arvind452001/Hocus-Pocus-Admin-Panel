@@ -33,7 +33,7 @@ function Login() {
       form.append("password", formData.password);
 
       let res = await loginApi(form);
-      console.log("login res", res.data);
+      // console.log("login res", res.data);
 
       // ✅ actual backend se token lo
       const token = res?.data?.token || res?.data?.access_token;
@@ -56,7 +56,7 @@ function Login() {
 
       navigate("/dashboard");
     } catch (err) {
-      console.log("ERROR FULL:", err.response?.data); // 👈 MOST IMPORTANT
+      // console.log("ERROR FULL:", err.response?.data); // 👈 MOST IMPORTANT
 
       // 👇 backend ka actual message show karo
       setError(

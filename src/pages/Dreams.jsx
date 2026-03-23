@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
-import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { getDreamsApi, deleteDreamApi } from "../api/DreamsAPI";
 
@@ -39,13 +37,7 @@ const Dreams = () => {
   };
 
   return (
-    <div className="admin-app">
-      <Sidebar />
-
-      <div className="content">
-        <Header title="Dreams" />
-
-        <main className="container-fluid mt-0">
+   <main className="container-fluid mt-0">
           <div className="card">
             <div className="card-body">
 
@@ -121,8 +113,6 @@ const Dreams = () => {
             </div>
           </div>
         </main>
-      </div>
-    </div>
   );
 };
 

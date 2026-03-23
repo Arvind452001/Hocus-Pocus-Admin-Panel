@@ -5,7 +5,7 @@ import { getCategoriesApi } from "../api/Api";
 import { createCardApi, getCardsApi, updateCardApi } from "../api/CardsAPI";
 import { useNavigate } from "react-router-dom";
 
-const Cards = () => {
+const KatinaCards = () => {
   const [cards, setCards] = useState([]);
   const [categories, setCategories] = useState([]);
 
@@ -22,7 +22,7 @@ const Cards = () => {
   const [mode, setMode] = useState("add");
   const [selected, setSelected] = useState(null);
 
-  let navigate = useNavigate();
+  let navigate= useNavigate()
   // 🔥 Dummy fallback
   const dummyData = [
     {
@@ -111,65 +111,67 @@ const Cards = () => {
     setShowModal(true);
   };
 
-  const handleSubmit = async (form) => {
-    try {
-      const formData = new FormData();
+const handleSubmit = async (form) => {
+  try {
+    const formData = new FormData();
 
-      // ✅ REQUIRED
-      formData.append("category_id", selectedCategory);
-      formData.append("name", form.name);
-      formData.append("meaning", form.meaning);
+    // ✅ REQUIRED
+    formData.append("category_id", selectedCategory);
+    formData.append("name", form.name);
+    formData.append("meaning", form.meaning);
 
-      // ✅ OPTIONAL
-      formData.append("turkish_name", form.turkish_name || "");
-      formData.append("card_number", form.card_number || "");
-      formData.append("arcana", form.arcana || "");
-      formData.append("suit", form.suit || "");
-      formData.append("element", form.element || "");
-      formData.append("keywords", form.keywords || "");
-      formData.append("upright_meaning", form.upright_meaning || "");
-      formData.append("reversed_meaning", form.reversed_meaning || "");
+    // ✅ OPTIONAL
+    formData.append("turkish_name", form.turkish_name || "");
+    formData.append("card_number", form.card_number || "");
+    formData.append("arcana", form.arcana || "");
+    formData.append("suit", form.suit || "");
+    formData.append("element", form.element || "");
+    formData.append("keywords", form.keywords || "");
+    formData.append("upright_meaning", form.upright_meaning || "");
+    formData.append("reversed_meaning", form.reversed_meaning || "");
 
-      // 🔥 VERY IMPORTANT (image)
-      if (form.file) {
-        formData.append("image", form.file);
-      }
-
-      // 🧪 DEBUG
-      // for (let pair of formData.entries()) {
-      //   console.log(pair[0], pair[1]);
-      // }
-
-      // ✅ API CALL
-      if (mode === "add") {
-        await createCardApi(formData);
-      } else if (mode === "edit") {
-        await updateCardApi(selected.id, formData);
-      }
-
-      setShowModal(false);
-      fetchCards();
-    } catch (error) {
-      console.log(error);
+    // 🔥 VERY IMPORTANT (image)
+    if (form.file) {
+      formData.append("image", form.file);
     }
-  };
+
+    // 🧪 DEBUG
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
+    // ✅ API CALL
+    if (mode === "add") {
+      await createCardApi(formData);
+    } else if (mode === "edit") {
+      await updateCardApi(selected.id, formData);
+    }
+
+    setShowModal(false);
+    fetchCards();
+
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete?");
-    if (!confirmDelete) return;
+  const confirmDelete = window.confirm("Are you sure you want to delete?");
+  if (!confirmDelete) return;
 
-    try {
-      // console.log("Delete API call", id);
+  try {
+    console.log("Delete API call", id);
 
-      // TODO: call delete API
-      // await deleteCardApi(id);
+    // TODO: call delete API
+    // await deleteCardApi(id);
 
-      // refresh list
-      fetchCards();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    // refresh list
+    fetchCards();
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   return (
     <main className="container-fluid mt-4">
@@ -370,4 +372,4 @@ const Cards = () => {
   );
 };
 
-export default Cards;
+export default KatinaCards;

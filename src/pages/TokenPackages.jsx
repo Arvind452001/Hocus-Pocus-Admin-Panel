@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
-import Header from "../components/Header";
+
 import TokenPackageModal from "../components/TokenPackageModal";
 import {
   getTokenPackagesApi,
@@ -59,105 +58,98 @@ const TokenPackages = () => {
     }
   };
 
+  const handleSetPopular = async (id) => {
+    try {
+      await setPopularPackageApi(id);
 
-const handleSetPopular = async (id) => {
-  try {
-    await setPopularPackageApi(id)
+      // refresh table
+      fetchPackages();
 
-    // refresh table
-    fetchPackages()
-
-    // optional
-    alert("Package marked as popular")
-  } catch (err) {
-    console.log(err?.response?.data || err.message)
-  }
-}
+      // optional
+      alert("Package marked as popular");
+    } catch (err) {
+      console.log(err?.response?.data || err.message);
+    }
+  };
   return (
-    <div className="admin-app">
-      <Sidebar />
+    <div className="">
+      <main className="container-fluid mt-4">
+        <div className="card">
+          <div className="card-body">
+            {/* HEADER */}
+            <div className="d-flex justify-content-between mb-3">
+              <h5>Token Packages</h5>
 
-      <div className="content">
-        <Header title="Token Packages" />
+              <button
+                className="btn btn-primary"
+                onClick={() => openModal("add")}
+              >
+                + Add Package
+              </button>
+            </div>
 
-        <main className="container-fluid mt-4">
-          <div className="card">
-            <div className="card-body">
-              {/* HEADER */}
-              <div className="d-flex justify-content-between mb-3">
-                <h5>Token Packages</h5>
+            {/* TABLE */}
+            <table className="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Tokens</th>
+                  <th>Price</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
 
-                <button
-                  className="btn btn-primary"
-                  onClick={() => openModal("add")}
-                >
-                  + Add Package
-                </button>
-              </div>
-
-              {/* TABLE */}
-              <table className="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Tokens</th>
-                    <th>Price</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {packages.map((pkg) => (
-                    <tr key={pkg.id}>
-                      <td>{pkg.name}</td>
-                      <td>{pkg.tokens}</td>
-                      <td>{pkg.price}</td>
+              <tbody>
+                {packages.map((pkg) => (
+                  <tr key={pkg.id}>
+                    <td>{pkg.name}</td>
+                    <td>{pkg.tokens}</td>
+                    <td>{pkg.price}</td>
 
                     <td>
-  <div className="d-flex gap-2">
+                      <div className="d-flex gap-2">
+                        <button
+                          className="btn btn-info btn-sm"
+                          onClick={() => openModal("view", pkg)}
+                        >
+                          <i className="bi bi-eye-fill"></i>
+                        </button>
 
-    <button
-      className="btn btn-info btn-sm"
-      onClick={() => openModal("view", pkg)}
-    >
-      <i className="bi bi-eye-fill"></i>
-    </button>
+                        <button
+                          className="btn btn-warning btn-sm"
+                          onClick={() => openModal("edit", pkg)}
+                        >
+                          <i className="bi bi-pencil"></i>
+                        </button>
 
-    <button
-      className="btn btn-warning btn-sm"
-      onClick={() => openModal("edit", pkg)}
-    >
-      <i className="bi bi-pencil"></i>
-    </button>
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() => handleDelete(pkg.id)}
+                        >
+                          <i className="bi bi-trash3"></i>
+                        </button>
 
-    <button
-      className="btn btn-danger btn-sm"
-      onClick={() => handleDelete(pkg.id)}
-    >
-      <i className="bi bi-trash3"></i>
-    </button>
-
-    {/* ✅ Popular Button */}
-<button
-  className={`btn btn-sm ${
-    pkg.is_popular ? "btn-success" : "btn-outline-warning"
-  }`}
-  onClick={() => handleSetPopular(pkg.id)}
->
-  <i className="bi bi-star-fill me-1"></i>
-  {pkg.is_popular ? "Popular" : "Make Popular"}
-</button>
-
-  </div>
-</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                        {/* ✅ Popular Button */}
+                        <button
+                          className={`btn btn-sm ${
+                            pkg.is_popular
+                              ? "btn-success"
+                              : "btn-outline-warning"
+                          }`}
+                          onClick={() => handleSetPopular(pkg.id)}
+                        >
+                          <i className="bi bi-star-fill me-1"></i>
+                          {pkg.is_popular ? "Popular" : "Make Popular"}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        </main>
-      </div>
+        </div>
+      </main>
 
       {/* MODAL */}
       <TokenPackageModal

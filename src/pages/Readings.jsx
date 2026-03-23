@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
-import Header from "../components/Header";
 import { deleteReadingsApi, getReadingsApi } from "../api/Api";
 
 const Readings = () => {
@@ -81,13 +79,8 @@ const Readings = () => {
   };
 
   return (
-    <div className="admin-app">
-      <Sidebar />
-
-      <div className="content">
-        <Header title="Readings" />
-
-        <main className="container-fluid">
+    <div className="">
+     <main className="container-fluid">
           <div className="page-section">
             <div className="card">
               <div className="card-body">
@@ -270,7 +263,6 @@ const Readings = () => {
           )}
 
         </main>
-      </div>
     </div>
   );
 };

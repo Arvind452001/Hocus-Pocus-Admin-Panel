@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
-import Header from "../components/Header";
+
 import { useParams } from "react-router-dom";
 
 import { getUserDetailsApi, makeAdminApi, removeAdminApi } from "../api/Api";
@@ -115,13 +114,7 @@ const UserDetails = () => {
   };
 
   return (
-    <div className="admin-app">
-      <Sidebar />
-
-      <div className="content">
-        <Header title="User Details" />
-
-        <main className="container-fluid mr-4">
+    <main className="container-fluid mr-4">
           {/* ================= PROFILE HEADER ================= */}
 
           <div className="card mb-3">
@@ -385,8 +378,6 @@ const UserDetails = () => {
             </div>
           </div>
         </main>
-      </div>
-    </div>
   );
 };
 
