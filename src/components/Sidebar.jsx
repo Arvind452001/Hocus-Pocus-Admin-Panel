@@ -133,10 +133,10 @@ function Sidebar() {
           <span className="nav-text">Dreams</span>
         </NavLink>
 
-      <NavLink to="/cards" className="nav-link d-flex align-items-center">
+      {/* <NavLink to="/cards" className="nav-link d-flex align-items-center">
   <i className="bi bi-collection me-2"></i>
   <span className="nav-text">Cards</span>
-</NavLink>
+</NavLink> */}
 
 <NavLink to="/tarotCards" className="nav-link d-flex align-items-center">
   <i className="bi bi-stars me-2"></i>

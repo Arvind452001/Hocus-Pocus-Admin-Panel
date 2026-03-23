@@ -9,6 +9,17 @@ export const getCardsApi = (params) => {
   });
 };
 
+export const getTarotCardsApi = (params) => { 
+  return axiosJSONData.get("/admin/tarot-cards", {
+    params: params,
+  });
+};
+
+export const getKatinaCardsApi = (params) => { 
+  return axiosJSONData.get("/admin/katina-cards", {
+    params: params,
+  });
+};
 
 // 🔹 GET Card By ID
 export const getCardByIdApi = async (cardId) => {

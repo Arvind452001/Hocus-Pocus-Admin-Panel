@@ -2,8 +2,13 @@ import React, { useEffect, useState } from "react";
 
 import CardModal from "../components/CardModal";
 import { getCategoriesApi } from "../api/Api";
-import { createCardApi, getCardsApi, updateCardApi } from "../api/CardsAPI";
+import {
+  createCardApi,
+  getKatinaCardsApi,
+  updateCardApi,
+} from "../api/CardsAPI";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL_CARD } from "../config/apiConfig";
 
 const KatinaCards = () => {
   const [cards, setCards] = useState([]);
@@ -22,7 +27,7 @@ const KatinaCards = () => {
   const [mode, setMode] = useState("add");
   const [selected, setSelected] = useState(null);
 
-  let navigate= useNavigate()
+  let navigate = useNavigate();
   // 🔥 Dummy fallback
   const dummyData = [
     {
@@ -58,9 +63,9 @@ const KatinaCards = () => {
 
       // console.log("🔥 PAYLOAD", payload);
 
-      const res = await getCardsApi(payload);
+      const res = await getKatinaCardsApi(payload);
 
-      // console.log("API RES 👉", res);
+      console.log("API RES 👉", res);
 
       if (res?.data?.cards?.length > 0) {
         setCards(res.data.cards);
@@ -111,67 +116,65 @@ const KatinaCards = () => {
     setShowModal(true);
   };
 
-const handleSubmit = async (form) => {
-  try {
-    const formData = new FormData();
+  const handleSubmit = async (form) => {
+    try {
+      const formData = new FormData();
 
-    // ✅ REQUIRED
-    formData.append("category_id", selectedCategory);
-    formData.append("name", form.name);
-    formData.append("meaning", form.meaning);
+      // ✅ REQUIRED
+      formData.append("category_id", selectedCategory);
+      formData.append("name", form.name);
+      formData.append("meaning", form.meaning);
 
-    // ✅ OPTIONAL
-    formData.append("turkish_name", form.turkish_name || "");
-    formData.append("card_number", form.card_number || "");
-    formData.append("arcana", form.arcana || "");
-    formData.append("suit", form.suit || "");
-    formData.append("element", form.element || "");
-    formData.append("keywords", form.keywords || "");
-    formData.append("upright_meaning", form.upright_meaning || "");
-    formData.append("reversed_meaning", form.reversed_meaning || "");
+      // ✅ OPTIONAL
+      formData.append("turkish_name", form.turkish_name || "");
+      formData.append("card_number", form.card_number || "");
+      formData.append("arcana", form.arcana || "");
+      formData.append("suit", form.suit || "");
+      formData.append("element", form.element || "");
+      formData.append("keywords", form.keywords || "");
+      formData.append("upright_meaning", form.upright_meaning || "");
+      formData.append("reversed_meaning", form.reversed_meaning || "");
 
-    // 🔥 VERY IMPORTANT (image)
-    if (form.file) {
-      formData.append("image", form.file);
+      // 🔥 VERY IMPORTANT (image)
+      if (form.file) {
+        formData.append("image", form.file);
+      }
+
+      // 🧪 DEBUG
+      for (let pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+
+      // ✅ API CALL
+      if (mode === "add") {
+        await createCardApi(formData);
+      } else if (mode === "edit") {
+        await updateCardApi(selected.id, formData);
+      }
+
+      setShowModal(false);
+      fetchCards();
+    } catch (error) {
+      console.log(error);
     }
-
-    // 🧪 DEBUG
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
-
-    // ✅ API CALL
-    if (mode === "add") {
-      await createCardApi(formData);
-    } else if (mode === "edit") {
-      await updateCardApi(selected.id, formData);
-    }
-
-    setShowModal(false);
-    fetchCards();
-
-  } catch (error) {
-    console.log(error);
-  }
-};
-
+  };
 
   const handleDelete = async (id) => {
-  const confirmDelete = window.confirm("Are you sure you want to delete?");
-  if (!confirmDelete) return;
+    const confirmDelete = window.confirm("Are you sure you want to delete?");
+    if (!confirmDelete) return;
 
-  try {
-    console.log("Delete API call", id);
+    try {
+      console.log("Delete API call", id);
 
-    // TODO: call delete API
-    // await deleteCardApi(id);
+      // TODO: call delete API
+      // await deleteCardApi(id);
 
-    // refresh list
-    fetchCards();
-  } catch (error) {
-    console.log(error);
-  }
-};
+      // refresh list
+      fetchCards();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <main className="container-fluid mt-4">
@@ -234,108 +237,138 @@ const handleSubmit = async (form) => {
 
           {/* TABLE */}
           <div className="table-responsive">
-            <table className="table table-bordered">
-              <thead>
-                <tr>
-                  <th>Image</th>
-                  <th>No</th>
-                  <th>Name</th>
-                  <th>Arcana</th>
-                  <th>Suit</th>
-                  <th>Element</th>
-                  <th className="text-end">Action</th>
-                </tr>
-              </thead>
+        <table
+  className="table table-bordered"
+  style={{ tableLayout: "fixed", width: "100%" }}
+>
+  <thead>
+    <tr>
+      <th style={{ width: "70px" }}>Image</th>
+      <th style={{ width: "60px" }}>No</th>
+      <th style={{ width: "200px" }}>Name</th>
+      <th>Meaning</th>
+      <th style={{ width: "100px" }}>Status</th>
+      <th style={{ width: "140px" }} className="text-end">
+        Action
+      </th>
+    </tr>
+  </thead>
 
-              <tbody>
-                {cards.length === 0 ? (
-                  <tr>
-                    <td colSpan="7" className="text-center text-muted">
-                      No Cards Found
-                    </td>
-                  </tr>
-                ) : (
-                  cards.map((card) => (
-                    <tr key={card.id}>
-                      {/* IMAGE */}
-                      <td>
-                        <img
-                          src={`http://your-base-url.com/${card.image_file}`} // 🔥 change base URL
-                          // alt={card.name}
-                          style={{
-                            width: "40px",
-                            height: "60px",
-                            borderRadius: "6px",
-                            objectFit: "cover",
-                          }}
-                        />
-                      </td>
+  <tbody>
+    {cards.map((card) => (
+      <tr key={card.id}>
+        {/* IMAGE */}
+        <td style={{ verticalAlign: "middle" }}>
+          <img
+            src={`${BASE_URL_CARD}/${card.image}`}
+            alt={card.name}
+            style={{
+              width: "40px",
+              height: "60px",
+              borderRadius: "6px",
+              objectFit: "cover",
+            }}
+          />
+        </td>
 
-                      {/* CARD NUMBER */}
-                      <td>{card.card_number}</td>
+        {/* NO */}
+        <td style={{ verticalAlign: "middle" }}>{card.id}</td>
 
-                      {/* NAME */}
-                      <td>
-                        <div className="fw-bold">{card.name}</div>
-                        <small className="text-muted">
-                          {card.turkish_name}
-                        </small>
-                      </td>
+        {/* NAME */}
+        <td style={{ verticalAlign: "middle" }}>
+          <div
+            className="fw-bold"
+            style={{
+              maxWidth: "180px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+            title={card.name}
+          >
+            {card.name}
+          </div>
 
-                      {/* ARCANA */}
-                      <td>
-                        <span className="badge bg-primary">{card.arcana}</span>
-                      </td>
+          <small
+            className="text-muted"
+            style={{
+              display: "block",
+              maxWidth: "180px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+            title={card.keywords}
+          >
+            {card.keywords}
+          </small>
+        </td>
 
-                      {/* SUIT */}
-                      <td>{card.suit}</td>
+        {/* MEANING */}
+        <td
+          style={{
+            verticalAlign: "middle",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {card.meaning}
+        </td>
 
-                      {/* ELEMENT */}
-                      <td>{card.element}</td>
+        {/* STATUS */}
+        <td style={{ verticalAlign: "middle" }}>
+          {card.is_active ? (
+            <span className="badge bg-success">Active</span>
+          ) : (
+            <span className="badge bg-secondary">Inactive</span>
+          )}
+        </td>
 
-                      {/* ACTION */}
-                      <td className="text-end">
-                        {/* View */}
-                        <button
-                          className="btn btn-sm me-2"
-                          style={{
-                            backgroundColor: "#e3f2fd",
-                            color: "#0d6efd",
-                          }}
-                          onClick={() => openModal("view", card)}
-                        >
-                          <i className="bi bi-eye"></i>
-                        </button>
+        {/* ACTION */}
+        <td
+          className="text-end"
+          style={{ verticalAlign: "middle", whiteSpace: "nowrap" }}
+        >
+          {/* View */}
+          <button
+            className="btn btn-sm me-2"
+            style={{
+              backgroundColor: "#e3f2fd",
+              color: "#0d6efd",
+            }}
+            onClick={() => openModal("view", card)}
+          >
+            <i className="bi bi-eye"></i>
+          </button>
 
-                        {/* Edit */}
-                        <button
-                          className="btn btn-sm me-2"
-                          style={{
-                            backgroundColor: "#fff3cd",
-                            color: "#ffc107",
-                          }}
-                          onClick={() => openModal("edit", card)}
-                        >
-                          <i className="bi bi-pencil-square"></i>
-                        </button>
+          {/* Edit */}
+          <button
+            className="btn btn-sm me-2"
+            style={{
+              backgroundColor: "#fff3cd",
+              color: "#ffc107",
+            }}
+            onClick={() => openModal("edit", card)}
+          >
+            <i className="bi bi-pencil-square"></i>
+          </button>
 
-                        {/* Delete */}
-                        <button
-                          className="btn btn-sm"
-                          style={{
-                            backgroundColor: "#f8d7da",
-                            color: "#dc3545",
-                          }}
-                          onClick={() => handleDelete(card.id)}
-                        >
-                          <i className="bi bi-trash"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+          {/* Delete */}
+          <button
+            className="btn btn-sm"
+            style={{
+              backgroundColor: "#f8d7da",
+              color: "#dc3545",
+            }}
+            onClick={() => handleDelete(card.id)}
+          >
+            <i className="bi bi-trash"></i>
+          </button>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
           </div>
 
           {/* PAGINATION */}

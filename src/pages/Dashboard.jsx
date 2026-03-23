@@ -13,7 +13,7 @@ function Dashboard() {
   const [readingsLast30Days, setReadingsLast30Days] = useState([]);
   const [readingsByCategory, setReadingsByCategory] = useState([]);
   const [recentUsers, setRecentUsers] = useState();
-  // console.log("readingsLast30Days",readingsByCategory);
+  // console.log("recentUsers",recentUsers);
   /* ================= CHART REFS ================= */
 
   const barChartRef = useRef(null);
@@ -223,11 +223,11 @@ function Dashboard() {
                         <td>{user.user_id}</td>
 
                         <td className="d-flex align-items-center">
-                          <img
+                          {/* <img
                             className="avatar me-2"
                             src={`https://i.pravatar.cc/40?u=${user.user_id}`}
                             alt="user"
-                          />
+                          /> */}
 
                           <span className="fw-semibold">{user.full_name}</span>
                         </td>

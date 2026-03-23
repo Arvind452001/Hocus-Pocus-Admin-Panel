@@ -25,6 +25,7 @@ import TarotCards from "./pages/TarotCards";
 import Layout from "./layout.jsx/Layout";
 import CreateCard from "./pages/CreateCard";
 import KatinaCards from "./pages/KatinaCards";
+import ReadingDetails from "./pages/ReadingDetails";
 
 // Sidebar Context
 export const SidebarContext = createContext();
@@ -81,6 +82,7 @@ function App() {
           <Route path="/token-config" element={<TokenConfig />} />
 
           <Route path="/readings" element={<Readings />} />
+          <Route path="/readingDetails/:id" element={<ReadingDetails />} />
           <Route path="/support" element={<Support />} />
 
           <Route path="/dreams" element={<Dreams />} />

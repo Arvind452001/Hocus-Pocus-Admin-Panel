@@ -148,6 +148,10 @@ export const getReadingsApi = (page = 1, limit = 10) => {
   return axiosJSONData.get(`/admin/readings?page=${page}&limit=${limit}`);
 };
 
+export const getReadingByIdApi = (id) => {
+  return axiosJSONData.get(`/admin/readings/${id}`);
+};
+
 export const deleteReadingsApi = (id) => {
   return axiosJSONData.delete(`/admin/readings/${id}`);
 };

@@ -20,7 +20,7 @@ const Users = () => {
   // console.log("users", users);
   const navigate = useNavigate();
   /* ================= FETCH USERS ================= */
-
+// console.log("user",users)
   useEffect(() => {
     fetchUsers();
   }, [page, limit]);
@@ -36,7 +36,7 @@ const Users = () => {
         sort_by: "newest",
       });
 
-      // console.log(res?.data?.users);
+      console.log(res?.data?.users);
 
       const data = res?.data?.users || [];
       setUsers(data);
@@ -223,7 +223,7 @@ const handleToggleUser = async (user) => {
                             <td>
                               <div className="user-cell d-flex align-items-center gap-2">
                                 <img
-                                  src={`https://i.pravatar.cc/40?u=${user.id}`}
+                                  src={`https://python.aitechnotech.in/hocuspocus${user.profile_picture}`}
                                   alt=""
                                   style={{
                                     width: "28px",

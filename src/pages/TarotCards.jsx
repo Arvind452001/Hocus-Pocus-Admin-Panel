@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 
 import CardModal from "../components/CardModal";
 import { getCategoriesApi } from "../api/Api";
-import { createCardApi, getCardsApi, updateCardApi } from "../api/CardsAPI";
+import { createCardApi, getTarotCardsApi, updateCardApi } from "../api/CardsAPI";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL, BASE_URL_CARD } from "../config/apiConfig";
 
 const TarotCards = () => {
   const [cards, setCards] = useState([]);
@@ -58,9 +59,9 @@ const TarotCards = () => {
 
       // console.log("🔥 PAYLOAD", payload);
 
-      const res = await getCardsApi(payload);
+      const res = await getTarotCardsApi(payload);
 
-      // console.log("API RES 👉", res);
+      console.log("API RES 👉", res.data.cards);
 
       if (res?.data?.cards?.length > 0) {
         setCards(res.data.cards);
@@ -258,7 +259,7 @@ const TarotCards = () => {
                       {/* IMAGE */}
                       <td>
                         <img
-                          src={`http://your-base-url.com/${card.image_file}`} // 🔥 change base URL
+                          src={`${BASE_URL_CARD}/tarot-images/${card.image_file}`} // 🔥 change base URL
                           // alt={card.name}
                           style={{
                             width: "40px",

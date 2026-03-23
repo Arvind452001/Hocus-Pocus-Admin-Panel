@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { deleteReadingsApi, getReadingsApi } from "../api/Api";
+import { useNavigate } from "react-router-dom";
 
 const Readings = () => {
   const [readings, setReadings] = useState([]);
@@ -14,6 +15,7 @@ const Readings = () => {
   const [selectedReading, setSelectedReading] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
+  const navigate= useNavigate()
   // ✅ API Call
   useEffect(() => {
     fetchReadings();
@@ -140,7 +142,7 @@ const Readings = () => {
                             <td>
                               <button
                                 className="btn btn-sm btn-outline-primary me-2"
-                                onClick={() => handleView(item)}
+                                onClick={() => navigate(`/readingDetails/${item.id}`)}
                               >
                                 <i className="bi bi-eye"></i>
                               </button>

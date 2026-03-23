@@ -4,6 +4,7 @@ import CardModal from "../components/CardModal";
 import { getCategoriesApi } from "../api/Api";
 import { createCardApi, getCardsApi, updateCardApi } from "../api/CardsAPI";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL_CARD } from "../config/apiConfig";
 
 const Cards = () => {
   const [cards, setCards] = useState([]);
@@ -22,6 +23,7 @@ const Cards = () => {
   const [mode, setMode] = useState("add");
   const [selected, setSelected] = useState(null);
 
+  console.log("cards",cards)
   let navigate = useNavigate();
   // 🔥 Dummy fallback
   const dummyData = [
@@ -258,7 +260,7 @@ const Cards = () => {
                       {/* IMAGE */}
                       <td>
                         <img
-                          src={`http://your-base-url.com/${card.image_file}`} // 🔥 change base URL
+                           src={`${BASE_URL_CARD}/tarot-images/${card.image_file}`} // 🔥 change base URL
                           // alt={card.name}
                           style={{
                             width: "40px",

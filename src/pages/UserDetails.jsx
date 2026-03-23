@@ -120,18 +120,19 @@ const UserDetails = () => {
           <div className="card mb-3">
             <div className="card-body d-flex align-items-center gap-3">
               <img
-                src={
-                  profile?.profile_picture ||
-                  `https://i.pravatar.cc/80?u=${user.id}`
-                }
-                alt=""
-                style={{
-                  width: "70px",
-                  height: "70px",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                }}
-              />
+  src={
+    profile?.profile_picture
+      ? `https://python.aitechnotech.in/hocuspocus${profile.profile_picture}`
+      : "https://i.pravatar.cc/70"
+  }
+  alt="user"
+  style={{
+    width: "70px",
+    height: "70px",
+    borderRadius: "50%",
+    objectFit: "cover",
+  }}
+/>
 
               <div>
                 <h5 className="mb-1">{user.full_name}</h5>

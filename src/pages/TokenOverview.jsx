@@ -70,15 +70,15 @@ const TokenOverview = () => {
             </div>
           </div>
 
-          <div className="col-md-3">
+          {/* <div className="col-md-3">
             <div className="card p-3 text-center">
-              {/* ===== TITLE + VALUE (SAME LINE) ===== */}
+           
               <div className="d-flex justify-content-center align-items-center gap-2 mb-2">
                 <h6 className="mb-0 text-muted">Expired</h6>
                 <h4 className="mb-0">{overview.expired_token_records}</h4>
               </div>
 
-              {/* ===== BUTTON ===== */}
+           
               <button
                 className="btn btn-outline-danger"
                 style={{ padding: "2px 6px", fontSize: "12px" }}
@@ -87,7 +87,7 @@ const TokenOverview = () => {
                 Cleanup expired token
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* ===== TABLE ===== */}
