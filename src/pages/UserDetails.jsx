@@ -9,6 +9,7 @@ import {
   extendTokenExpiryApi,
   resetTokensApi,
 } from "../api/TokenAPIs";
+import { useTranslation } from "react-i18next";
 
 const UserDetails = () => {
   const { id } = useParams();
@@ -16,6 +17,7 @@ const UserDetails = () => {
   const [amount, setAmount] = useState(1);
   const [days, setDays] = useState(1);
 
+   const { t } = useTranslation(); 
   useEffect(() => {
     fetchUser();
   }, []);
@@ -50,7 +52,7 @@ const UserDetails = () => {
     }
   };
 
-  if (!data) return <div>Loading...</div>;
+  if (!data) return <div>{t("userDetails.loading")}</div>;
 
   const { user, token_info, profile, settings, activity } = data;
 
@@ -115,199 +117,197 @@ const UserDetails = () => {
 
   return (
     <main className="container-fluid mr-4">
-          {/* ================= PROFILE HEADER ================= */}
+      {/* ================= PROFILE HEADER ================= */}
 
-          <div className="card mb-3">
-            <div className="card-body d-flex align-items-center gap-3">
-              <img
-  src={
-    profile?.profile_picture
-      ? `https://python.aitechnotech.in/hocuspocus${profile.profile_picture}`
-      : "https://i.pravatar.cc/70"
-  }
-  alt="user"
-  style={{
-    width: "70px",
-    height: "70px",
-    borderRadius: "50%",
-    objectFit: "cover",
-  }}
-/>
+      <div className="card mb-3">
+        <div className="card-body d-flex align-items-center gap-3">
+          <img
+            src={
+              profile?.profile_picture
+                ? `https://python.aitechnotech.in/hocuspocus${profile.profile_picture}`
+                : "https://i.pravatar.cc/70"
+            }
+            alt="user"
+            style={{
+              width: "70px",
+              height: "70px",
+              borderRadius: "50%",
+              objectFit: "cover",
+            }}
+          />
 
-              <div>
-                <h5 className="mb-1">{user.full_name}</h5>
+          <div>
+            <h5 className="mb-1">{user.full_name}</h5>
 
-                <div className="text-muted">{user.email}</div>
+            <div className="text-muted">{user.email}</div>
 
-                <div className="mt-1">
-                  {user.is_verified && (
-                    <span className="badge bg-success me-2">Verified</span>
-                  )}
+            <div className="mt-1">
+              {user.is_verified && (
+                <span className="badge bg-success me-2">{t("userDetails.verified")}</span>
+              )}
 
-                  {user.is_active ? (
-                    <span className="badge bg-primary me-2">Active</span>
-                  ) : (
-                    <span className="badge bg-danger ">Inactive</span>
-                  )}
+              {user.is_active ? (
+                <span className="badge bg-primary me-2">{t("userDetails.active")}</span>
+              ) : (
+                <span className="badge bg-danger">{t("userDetails.inactive")}</span>
+              )}
 
-                  {user.is_admin && (
-                    <span className="badge bg-dark ">Admin</span>
-                  )}
-                </div>
-              </div>
+              {user.is_admin && <span className="badge bg-dark">{t("userDetails.admin")}</span>}
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* ================= ROLE & PERMISSIONS ================= */}
+      {/* ================= ROLE & PERMISSIONS ================= */}
 
-          <div className="card mb-3">
+      <div className="card mb-3">
+        <div className="card-body">
+          <h6 className="mb-3">{t("userDetails.rolePermissions")}</h6>
+
+          <div className="d-flex justify-content-between align-items-center">
+            <div>
+              <strong>{t("userDetails.adminAccess")}</strong>
+
+              <p className="text-muted mb-0">
+                {t("userDetails.adminAccessDesc")}
+              </p>
+            </div>
+
+            <div className="d-flex align-items-center gap-2">
+              <p className=" mb-0">{t("userDetails.createAdmin")}</p>
+
+              <input
+                className="form-check-input m-0"
+                type="checkbox"
+                checked={user.is_admin}
+                onChange={handleAdminToggle}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* ================= BASIC INFO ================= */}
+
+      <div className="row g-3 mb-3">
+        <div className="col-md-6">
+          <div className="card">
             <div className="card-body">
-              <h6 className="mb-3">Role & Permissions</h6>
+              <h6 className="mb-3">{t("userDetails.basicInfo")}</h6>
 
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <strong>Admin Access</strong>
-
-                  <p className="text-muted mb-0">
-                    Allow this user to access admin dashboard
-                  </p>
-                </div>
-
-                <div className="d-flex align-items-center gap-2">
-                  <p className=" mb-0">Create Admin</p>
-
-                  <input
-                    className="form-check-input m-0"
-                    type="checkbox"
-                    checked={user.is_admin}
-                    onChange={handleAdminToggle}
-                  />
-                </div>
-              </div>
+              <p>
+                <strong><strong>{t("userDetails.gender")}:</strong></strong> {user.gender}
+              </p>
+              <p>
+                <strong>{t("userDetails.dob")}:</strong> {user.date_of_birth}
+              </p>
+              <p>
+                <strong>{t("userDetails.zodiac")}:</strong> {user.zodiac_sign}
+              </p>
+              <p>
+                <strong>{t("userDetails.relationship")}:</strong> {user.relationship_status}
+              </p>
+              <p>
+                <strong>{t("userDetails.joined")}:</strong>{" "}
+                {new Date(user.created_at).toLocaleDateString()}
+              </p>
             </div>
           </div>
-          {/* ================= BASIC INFO ================= */}
+        </div>
 
-          <div className="row g-3 mb-3">
-            <div className="col-md-6">
-              <div className="card">
-                <div className="card-body">
-                  <h6 className="mb-3">Basic Information</h6>
+        {/* ================= TOKEN INFO ================= */}
 
-                  <p>
-                    <strong>Gender:</strong> {user.gender}
-                  </p>
-                  <p>
-                    <strong>Date of Birth:</strong> {user.date_of_birth}
-                  </p>
-                  <p>
-                    <strong>Zodiac Sign:</strong> {user.zodiac_sign}
-                  </p>
-                  <p>
-                    <strong>Relationship:</strong> {user.relationship_status}
-                  </p>
-                  <p>
-                    <strong>Joined:</strong>{" "}
-                    {new Date(user.created_at).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* ================= TOKEN INFO ================= */}
-
-            <div className="col-md-6">
-              <div className="card">
-                <div className="card-body">
-                  <h6 className="mb-3">Token Info</h6>
-
-                  {/* ===== BALANCE + RESET ===== */}
-                  <div className="d-flex justify-content-between align-items-center mb-3">
-                    <p className="mb-0">
-                      <strong>Balance:</strong> {token_info.balance}
-                    </p>
-
-                    <button
-                      className="btn btn-outline-danger"
-                      onClick={handleResetTokens}
-                    >
-                      🔄 Reset Tokens
-                    </button>
-                  </div>
-
-                  {/* ===== ADD / REMOVE ===== */}
-                  <input
-                    type="number"
-                    className="form-control mb-2"
-                    placeholder="Enter amount"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                  />
-
-                  <div className="d-flex gap-2 mb-3">
-                    <button
-                      className="btn btn-success w-50"
-                      onClick={() => handleTokenAction("add")}
-                    >
-                      ➕ Add
-                    </button>
-
-                    <button
-                      className="btn btn-danger w-50"
-                      onClick={() => handleTokenAction("deduct")}
-                    >
-                      ➖ Remove
-                    </button>
-                  </div>
-
-                  {/* ===== EXTEND EXPIRY ===== */}
-                  <div className="d-flex gap-2">
-                    <input
-                      type="number"
-                      className="form-control w-75"
-                      placeholder="Enter days"
-                      value={days}
-                      min={1}
-                      onChange={(e) => setDays(e.target.value)}
-                    />
-
-                    <button
-                      className="btn btn-primary w-25"
-                      onClick={handleExtendExpiry}
-                    >
-                      Extend
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* ================= SETTINGS ================= */}
-
-          <div className="card mb-3">
+        <div className="col-md-6">
+          <div className="card">
             <div className="card-body">
-              <h6 className="mb-3">User Settings</h6>
+              <h6 className="mb-3">{t("userDetails.tokenInfo")}</h6>
 
-              <p>
-                <strong>Language:</strong> {settings.language}
-              </p>
+              {/* ===== BALANCE + RESET ===== */}
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <p className="mb-0">
+                  <strong>{t("userDetails.balance")}:</strong> {token_info.balance}
+                </p>
 
-              <p>
-                <strong>Notifications:</strong>
-                {settings.notifications_enabled ? " Enabled" : " Disabled"}
-              </p>
+                <button
+                  className="btn btn-outline-danger"
+                  onClick={handleResetTokens}
+                >
+                  🔄 {t("userDetails.resetTokens")}
+                </button>
+              </div>
 
-              <p>
-                <strong>Sound:</strong>
-                {settings.sound_enabled ? " Enabled" : " Disabled"}
-              </p>
+              {/* ===== ADD / REMOVE ===== */}
+              <input
+                type="number"
+                className="form-control mb-2"
+                placeholder="Enter amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+              />
+
+              <div className="d-flex gap-2 mb-3">
+                <button
+                  className="btn btn-success w-50"
+                  onClick={() => handleTokenAction("add")}
+                >
+                  ➕ {t("userDetails.add")}
+                </button>
+
+                <button
+                  className="btn btn-danger w-50"
+                  onClick={() => handleTokenAction("deduct")}
+                >
+                  ➖ {t("userDetails.remove")}
+                </button>
+              </div>
+
+              {/* ===== EXTEND EXPIRY ===== */}
+              <div className="d-flex gap-2">
+                <input
+                  type="number"
+                  className="form-control w-75"
+                  placeholder="Enter days"
+                  value={days}
+                  min={1}
+                  onChange={(e) => setDays(e.target.value)}
+                />
+
+                <button
+                  className="btn btn-primary w-25"
+                  onClick={handleExtendExpiry}
+                >
+                  {t("userDetails.extend")}
+                </button>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* ================= ACTIVITY ================= */}
+      {/* ================= SETTINGS ================= */}
 
-          {/* <div className="row g-3 mb-3">
+      <div className="card mb-3">
+        <div className="card-body">
+          <h6 className="mb-3">{t("userDetails.userSettings")}</h6>
+
+          <p>
+            <strong>{t("userDetails.language")}:</strong> {settings.language}
+          </p>
+
+          <p>
+            <strong>{t("userDetails.notifications")}:</strong>
+            {settings.notifications_enabled ? " " + t("userDetails.enabled") : " " + t("userDetails.disabled")}
+          </p>
+
+          <p>
+            <strong>{t("userDetails.sound")}:</strong>
+            {settings.sound_enabled ? " " + t("userDetails.enabled") : " " + t("userDetails.disabled")}
+          </p>
+        </div>
+      </div>
+
+      {/* ================= ACTIVITY ================= */}
+
+      {/* <div className="row g-3 mb-3">
 
 <div className="col-md-4">
 
@@ -329,56 +329,56 @@ const UserDetails = () => {
 
 </div> */}
 
-          {/* ================= READINGS BY CATEGORY ================= */}
+      {/* ================= READINGS BY CATEGORY ================= */}
 
-          <div className="card mb-3">
-            <div className="card-body">
-              <h6 className="mb-3">Readings By Category</h6>
+      <div className="card mb-3">
+        <div className="card-body">
+          <h6 className="mb-3">{t("userDetails.readingsByCategory")}</h6>
 
-              <ul className="list-group">
-                {activity.readings_by_category.map((c, i) => (
-                  <li
-                    key={i}
-                    className="list-group-item d-flex justify-content-between"
-                  >
-                    {c.category}
-                    <span className="badge bg-primary">{c.count}</span>
-                  </li>
+          <ul className="list-group">
+            {activity.readings_by_category.map((c, i) => (
+              <li
+                key={i}
+                className="list-group-item d-flex justify-content-between"
+              >
+                {c.category}
+                <span className="badge bg-primary">{c.count}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* ================= RECENT READINGS ================= */}
+
+      <div className="card">
+        <div className="card-body">
+          <h6 className="mb-3">{t("userDetails.recentReadings")}</h6>
+
+          <div className="table-responsive">
+            <table className="table">
+              <thead>
+                <tr>
+                 <th>{t("userDetails.id")}</th>
+<th>{t("userDetails.question")}</th>
+<th>{t("userDetails.date")}</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {activity.recent_readings.map((r) => (
+                  <tr key={r.id}>
+                    <td>{r.id}</td>
+                    <td>{r.question}</td>
+                    <td>{new Date(r.created_at).toLocaleString()}</td>
+                  </tr>
                 ))}
-              </ul>
-            </div>
+              </tbody>
+            </table>
           </div>
-
-          {/* ================= RECENT READINGS ================= */}
-
-          <div className="card">
-            <div className="card-body">
-              <h6 className="mb-3">Recent Readings</h6>
-
-              <div className="table-responsive">
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Question</th>
-                      <th>Date</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {activity.recent_readings.map((r) => (
-                      <tr key={r.id}>
-                        <td>{r.id}</td>
-                        <td>{r.question}</td>
-                        <td>{new Date(r.created_at).toLocaleString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </main>
+        </div>
+      </div>
+    </main>
   );
 };
 

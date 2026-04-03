@@ -1,4 +1,5 @@
 
-export const BASE_URL = "https://python.aitechnotech.in/hocuspocus/api";
+export const BASE_URL = "https://api.hocuspocusapp.com/api";
 
-export const BASE_URL_CARD = "https://python.aitechnotech.in";
+export const BASE_URL_CARD = "https://api.hocuspocusapp.com";
+

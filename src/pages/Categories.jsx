@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { deleteCategoryApi, getCategoriesApi } from "../api/Api";
+import { useTranslation } from "react-i18next";
 
 const Categories = () => {
   const [search, setSearch] = useState("");
@@ -9,7 +10,7 @@ const Categories = () => {
   const [loading, setLoading] = useState(true);
 
   /* ================= FETCH CATEGORIES ================= */
-
+  const { t } = useTranslation();
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -29,9 +30,7 @@ const Categories = () => {
   /* ================= DELETE CATEGORY ================= */
 
   const handleDeleteCategory = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this category?",
-    );
+    const confirmDelete = window.confirm(t("categories.deleteConfirm"));
 
     if (!confirmDelete) return;
 
@@ -58,14 +57,14 @@ const Categories = () => {
             {/* HEADER */}
 
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <h5 className="mb-0">Categories</h5>
+              <h5>{t("categories.title")}</h5>
 
               <Link
                 to="/add-category"
                 className="btn"
                 style={{ backgroundColor: "#bd00da", color: "#fff" }}
               >
-                New Category
+                {t("categories.newCategory")}
               </Link>
             </div>
 
@@ -85,14 +84,14 @@ const Categories = () => {
                   <option value={50}>50</option>
                 </select>
 
-                <small className="ms-2">entries per page</small>
+                <small>{t("categories.entriesPerPage")}</small>
               </div>
 
               <div>
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Search..."
+                  placeholder={t("categories.search")}
                   style={{ width: "220px" }}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -106,14 +105,14 @@ const Categories = () => {
               <table className="table datatable">
                 <thead>
                   <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Subtitle</th>
-                    <th>Token Cost</th>
-                    <th>Free Daily</th>
-                    <th>Readings</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>{t("categories.id")}</th>
+                    <th>{t("categories.name")}</th>
+                    <th>{t("categories.subtitle")}</th>
+                    <th>{t("categories.tokenCost")}</th>
+                    <th>{t("categories.freeDaily")}</th>
+                    <th>{t("categories.readings")}</th>
+                    <th>{t("categories.status")}</th>
+                    <th>{t("categories.actions")}</th>
                   </tr>
                 </thead>
 
@@ -123,7 +122,7 @@ const Categories = () => {
                   {loading && (
                     <tr>
                       <td colSpan="8" className="text-center">
-                        Loading...
+                        {t("categories.loading")}
                       </td>
                     </tr>
                   )}
@@ -132,60 +131,61 @@ const Categories = () => {
 
                   {!loading &&
                     filteredData.map((cat) => (
-                      <tr key={cat.id}>
-                        <td>{cat.id}</td>
+                    <tr key={cat.id}>
+  <td>{cat.id}</td>
 
-                        <td>{cat.name}</td>
+  <td>{cat.name}</td>
 
-                        <td>{cat.subtitle}</td>
+  <td>{cat.subtitle}</td>
 
-                        <td>
-                          <span className="badge bg-primary">
-                            {cat.token_cost}
-                          </span>
-                        </td>
+  <td>
+    <span className="badge bg-primary">
+      {cat.token_cost}
+    </span>
+  </td>
 
-                        <td>{cat.is_free_daily ? "Yes" : "No"}</td>
+  {/* ✅ FIX HERE */}
+  <td>
+    {cat.is_free_daily
+      ? t("categories.yes")
+      : t("categories.no")}
+  </td>
 
-                        <td>
-                          <span className="badge bg-info">
-                            {cat.reading_count}
-                          </span>
-                        </td>
+  <td>
+    <span className="badge bg-info">
+      {cat.reading_count}
+    </span>
+  </td>
 
-                        <td>
-                          {cat.is_active ? (
-                            <span className="badge bg-success">Active</span>
-                          ) : (
-                            <span className="badge bg-warning text-dark">
-                              Disabled
-                            </span>
-                          )}
-                        </td>
+  <td>
+    {cat.is_active
+      ? t("categories.active")
+      : t("categories.disabled")}
+  </td>
 
-                        <td>
-                          <Link
-                            to={`/category-view/${cat.id}`}
-                            className="btn btn-sm btn-outline-primary me-1"
-                          >
-                            <i className="bi bi-eye"></i>
-                          </Link>
+  <td>
+    <Link
+      to={`/category-view/${cat.id}`}
+      className="btn btn-sm btn-outline-primary me-1"
+    >
+      <i className="bi bi-eye"></i>
+    </Link>
 
-                          <Link
-                            to={`/category-edit/${cat.id}`}
-                            className="btn btn-sm btn-outline-success me-1"
-                          >
-                            <i className="bi bi-pencil"></i>
-                          </Link>
+    <Link
+      to={`/category-edit/${cat.id}`}
+      className="btn btn-sm btn-outline-success me-1"
+    >
+      <i className="bi bi-pencil"></i>
+    </Link>
 
-                          <button
-                            onClick={() => handleDeleteCategory(cat.id)}
-                            className="btn btn-sm btn-outline-danger"
-                          >
-                            <i className="bi bi-trash"></i>
-                          </button>
-                        </td>
-                      </tr>
+    <button
+      onClick={() => handleDeleteCategory(cat.id)}
+      className="btn btn-sm btn-outline-danger"
+    >
+      <i className="bi bi-trash"></i>
+    </button>
+  </td>
+</tr>
                     ))}
 
                   {/* EMPTY */}
@@ -193,7 +193,7 @@ const Categories = () => {
                   {!loading && filteredData.length === 0 && (
                     <tr>
                       <td colSpan="8" className="text-center text-muted">
-                        No categories found
+                        {t("categories.noCategoriesFound")}
                       </td>
                     </tr>
                   )}

@@ -1,14 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import { useSidebar } from "../App";
+import { useTranslation } from "react-i18next";
+import i18n from "../i18n";
 
 function Header({ title }) {
   const { toggleSidebar } = useSidebar();
-  
+
   const navigate = useNavigate();
+
+  // ✅ your existing hook
+  const { t } = useTranslation();
+
+  // ✅ ADD THIS (new)
+  const toggleLanguage = () => {
+    const newLang = i18n.language === "en" ? "tr" : "en";
+    i18n.changeLanguage(newLang);
+    localStorage.setItem("lang", newLang);
+  };
 
   // ✅ Sign out handler
   const handleLogout = () => {
-    localStorage.removeItem("token");      // token remove
+    localStorage.removeItem("token"); // token remove
     navigate("/login"); // redirect
   };
 
@@ -45,47 +57,126 @@ function Header({ title }) {
             <i className="bi bi-list"></i>
           </button>
 
-          <span style={{ fontSize: "18px", fontWeight: 600 }}>
-            {title}
-          </span>
+          <span style={{ fontSize: "18px", fontWeight: 600 }}>{title}</span>
         </div>
 
         {/* RIGHT */}
-        <div className="dropdown">
-          <button
-            className="btn btn-light dropdown-toggle"
-            data-bs-toggle="dropdown"
-            style={{ display: "flex", alignItems: "center", gap: "8px" }}
-          >
-            <div
+        <div className="dropdown d-flex align-items-center gap-2">
+          {/* 🌍 LANGUAGE DROPDOWN */}
+          {/* 🌍 LANGUAGE DROPDOWN */}
+          <div className="dropdown">
+            <button
+              className="btn dropdown-toggle"
+              data-bs-toggle="dropdown"
               style={{
-                width: "32px",
-                height: "32px",
-                borderRadius: "50%",
-                background: "#bd00da",
+                padding: "6px 12px",
+                borderRadius: "6px",
+                border: "none",
+                 background: "#EDE8E8",
+                // background: "rgb(189, 0, 218)", // ✅ YOUR COLOR
                 color: "#000",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                fontWeight: 600,
+                gap: "6px",
+                fontWeight: "500",
               }}
             >
-              A
-            </div>
-          </button>
+              🌐 {i18n.language.toUpperCase()}
+            </button>
 
-          <ul className="dropdown-menu dropdown-menu-end">
-            <li>
-              <button className="dropdown-item" onClick={goToProfile}>
-                Profile
-              </button>
-            </li>
-            <li>
-              <button className="dropdown-item text-danger" onClick={handleLogout}>
-                Sign out
-              </button>
-            </li>
-          </ul>
+            <ul
+              className="dropdown-menu"
+              style={{
+                minWidth: "160px",
+                borderRadius: "10px",
+                padding: "6px",
+                boxShadow: "0 8px 20px rgba(0,0,0,0.15)",
+              }}
+            >
+              {/* ENGLISH */}
+              <li>
+                <button
+                  className="dropdown-item"
+                  style={{
+                    borderRadius: "6px",
+                    background:
+                      i18n.language === "en"
+                        ? "rgb(189, 0, 218)"
+                        : "transparent",
+                    color: i18n.language === "en" ? "#fff" : "#000",
+                  }}
+                  onClick={() => {
+                    i18n.changeLanguage("en");
+                    localStorage.setItem("lang", "en");
+                  }}
+                >
+                  🇬🇧 English
+                </button>
+              </li>
+
+              {/* TURKISH */}
+              <li>
+                <button
+                  className="dropdown-item"
+                  style={{
+                    borderRadius: "6px",
+                    background:
+                      i18n.language === "tr"
+                        ? "rgb(189, 0, 218)"
+                        : "transparent",
+                    color: i18n.language === "tr" ? "#fff" : "#000",
+                  }}
+                  onClick={() => {
+                    i18n.changeLanguage("tr");
+                    localStorage.setItem("lang", "tr");
+                  }}
+                >
+                  🇹🇷 Turkish
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* 👤 EXISTING PROFILE DROPDOWN (UNCHANGED) */}
+          <div className="dropdown">
+            <button
+              className="btn btn-light dropdown-toggle"
+              data-bs-toggle="dropdown"
+              style={{ display: "flex", alignItems: "center", gap: "8px" }}
+            >
+              <div
+                style={{
+                  width: "32px",
+                  height: "32px",
+                  borderRadius: "50%",
+                  background: "#bd00da",
+                  color: "#000",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: 600,
+                }}
+              >
+                A
+              </div>
+            </button>
+
+            <ul className="dropdown-menu dropdown-menu-end">
+              <li>
+                <button className="dropdown-item" onClick={goToProfile}>
+                  Profile
+                </button>
+              </li>
+              <li>
+                <button
+                  className="dropdown-item text-danger"
+                  onClick={handleLogout}
+                >
+                  Sign out
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </header>

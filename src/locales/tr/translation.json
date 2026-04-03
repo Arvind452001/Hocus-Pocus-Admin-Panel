@@ -1,0 +1,159 @@
+{
+  "dashboard": {
+    "activeUser": "Aktif Kullanıcı",
+    "totalReadings": "Toplam Okuma",
+    "tokensSold": "Satılan Tokenlar",
+    "aiRequests": "AI İstekleri",
+    "tokenSales": "Token Satışları",
+    "readingTypes": "Okuma Türleri",
+    "recentUsers": "Son Kullanıcılar",
+    "id": "Kimlik",
+    "user": "Kullanıcı",
+    "email": "E-posta",
+    "totalReading": "Toplam Okuma",
+    "fromLastMonth": "geçen aydan"
+  },
+  "users": {
+    "users": "Kullanıcılar",
+    "searchUser": "Kullanıcı ara...",
+    "page": "Sayfa",
+    "addUser": "Kullanıcı Ekle",
+    "user": "Kullanıcı",
+    "email": "E-posta",
+    "tokens": "Tokenlar",
+    "status": "Durum",
+    "actions": "İşlemler",
+    "loading": "Yükleniyor...",
+    "noUsersFound": "Kullanıcı bulunamadı",
+    "blocked": "Engellendi",
+    "active": "Aktif",
+    "deleteUserConfirm": "Bu kullanıcıyı silmek istediğinizden emin misiniz?"
+  },
+
+  "sideBar": {
+    "dashboard": "Kontrol Paneli",
+    "users": "Kullanıcılar",
+    "categories": "Kategoriler",
+    "aiPrompt": "Yapay Zeka İstemleri",
+    "tokenSettings": "Token Ayarları",
+    "tokenOverview": "Token Genel Bakış",
+    "tokenPackage": "Token Paketleri",
+    "tokenConfig": "Token Yapılandırma",
+    "readings": "Okumalar",
+    "tarotCards": "Tarot Kartları",
+    "katinaCards": "Katina Kartları",
+    "dreams": "Rüyalar"
+  },
+
+  "categories": {
+    "title": "Kategoriler",
+    "newCategory": "Yeni Kategori",
+    "entriesPerPage": "sayfa başına kayıt",
+    "search": "Ara...",
+    "id": "Kimlik",
+    "name": "Ad",
+    "subtitle": "Alt Başlık",
+    "tokenCost": "Token Maliyeti",
+    "freeDaily": "Günlük Ücretsiz",
+    "readings": "Okumalar",
+    "status": "Durum",
+    "actions": "İşlemler",
+    "loading": "Yükleniyor...",
+    "yes": "Evet",
+    "no": "Hayır",
+    "active": "Aktif",
+    "disabled": "Devre Dışı",
+    "noCategoriesFound": "Kategori bulunamadı",
+    "deleteConfirm": "Bu kategoriyi silmek istediğinizden emin misiniz?"
+  },
+  "userDetails": {
+    "loading": "Yükleniyor...",
+    "verified": "Doğrulandı",
+    "active": "Aktif",
+    "inactive": "Pasif",
+    "admin": "Yönetici",
+
+    "rolePermissions": "Rol ve İzinler",
+    "adminAccess": "Yönetici Erişimi",
+    "adminAccessDesc": "Bu kullanıcının yönetici paneline erişmesine izin ver",
+    "createAdmin": "Yönetici Yap",
+
+    "basicInfo": "Temel Bilgiler",
+    "gender": "Cinsiyet",
+    "dob": "Doğum Tarihi",
+    "zodiac": "Burç",
+    "relationship": "İlişki Durumu",
+    "joined": "Katıldı",
+
+    "tokenInfo": "Token Bilgisi",
+    "balance": "Bakiye",
+    "resetTokens": "Tokenları Sıfırla",
+    "enterAmount": "Miktar girin",
+    "add": "Ekle",
+    "remove": "Çıkar",
+    "enterDays": "Gün girin",
+    "extend": "Uzat",
+
+    "tokenResetSuccess": "Tokenlar başarıyla sıfırlandı",
+    "tokenExtendSuccess": "Süre başarıyla uzatıldı",
+
+    "userSettings": "Kullanıcı Ayarları",
+    "language": "Dil",
+    "notifications": "Bildirimler",
+    "sound": "Ses",
+    "enabled": "Etkin",
+    "disabled": "Devre Dışı",
+
+    "readingsByCategory": "Kategoriye Göre Okumalar",
+    "recentReadings": "Son Okumalar",
+
+    "id": "Kimlik",
+    "question": "Soru",
+    "date": "Tarih"
+  },
+
+  "addUser": {
+    "title": "Yeni Kullanıcı Ekle",
+    "uploadPhoto": "Fotoğraf Yükle",
+    "fullName": "Ad Soyad",
+    "email": "E-posta",
+    "token": "jeton",
+    "status": "Durum",
+    "active": "Aktif",
+    "pending": "Beklemede",
+    "blocked": "Engellendi",
+    "addUserBtn": "Kullanıcı Ekle",
+    "cancel": "İptal",
+    "namePlaceholder": "Ad Soyad",
+    "emailPlaceholder": "ornek@email.com",
+    "tokenPlaceholder": "Token"
+  },
+
+  "categoryForm": {
+    "addCategory": "Kategori Ekle",
+    "editCategory": "Kategoriyi Düzenle",
+    "viewCategory": "Kategoriyi Görüntüle",
+
+    "categoryName": "Kategori Adı",
+    "subtitle": "Alt Başlık",
+    "tokenCost": "Token Maliyeti",
+    "freeDaily": "Günlük Ücretsiz Okuma",
+    "description": "Açıklama",
+
+    "yes": "Evet",
+    "no": "Hayır",
+
+    "namePlaceholder": "Örnek: Tarot Okuma",
+    "subtitlePlaceholder": "Kısa açıklama",
+    "tokenPlaceholder": "Örnek: 5",
+    "descriptionPlaceholder": "Kategori açıklamasını yazın...",
+
+    "saving": "Kaydediliyor...",
+    "addBtn": "Kategori Ekle",
+    "updateBtn": "Kategoriyi Güncelle",
+
+    "createSuccess": "Kategori başarıyla oluşturuldu",
+    "updateSuccess": "Kategori başarıyla güncellendi",
+    "operationFailed": "İşlem başarısız"
+  }
+}

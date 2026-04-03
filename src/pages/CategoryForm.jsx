@@ -5,10 +5,13 @@ import {
   getCategoryDetailsApi,
   updateCategoryApi,
 } from "../api/Api";
+import { useTranslation } from "react-i18next";
 
 const CategoryForm = ({ mode = "create" }) => {
   const navigate = useNavigate();
   const { id } = useParams();
+
+  const { t } = useTranslation();
 
   const [loading, setLoading] = useState(false);
 
@@ -31,7 +34,6 @@ const CategoryForm = ({ mode = "create" }) => {
   const fetchCategory = async () => {
     try {
       const res = await getCategoryDetailsApi(id);
-      // console.log("getCategoryDetailsApi",res)
       const cat = res?.data?.category;
 
       setFormData({
@@ -46,8 +48,6 @@ const CategoryForm = ({ mode = "create" }) => {
     }
   };
 
-  /* ================= HANDLE INPUT ================= */
-
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -57,16 +57,12 @@ const CategoryForm = ({ mode = "create" }) => {
     });
   };
 
-  /* ================= HANDLE BOOLEAN ================= */
-
   const handleFreeDaily = (e) => {
     setFormData({
       ...formData,
       is_free_daily: e.target.value === "true",
     });
   };
-
-  /* ================= SUBMIT ================= */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -81,31 +77,29 @@ const CategoryForm = ({ mode = "create" }) => {
 
       if (mode === "create") {
         await createCategoryApi(payload);
-        alert("Category created successfully");
+        alert(t("categoryForm.createSuccess"));
       }
 
       if (mode === "edit") {
         await updateCategoryApi(id, payload);
-        alert("Category updated successfully");
+        alert(t("categoryForm.updateSuccess"));
       }
 
       navigate("/categories");
     } catch (error) {
       console.error("Category save failed", error);
-      alert("Operation failed");
+      alert(t("categoryForm.operationFailed"));
     } finally {
       setLoading(false);
     }
   };
 
-  /* ================= PAGE TITLE ================= */
-
   const pageTitle =
     mode === "create"
-      ? "Add Category"
+      ? t("categoryForm.addCategory")
       : mode === "edit"
-        ? "Edit Category"
-        : "View Category";
+      ? t("categoryForm.editCategory")
+      : t("categoryForm.viewCategory");
 
   return (
     <main className="container-fluid">
@@ -116,16 +110,17 @@ const CategoryForm = ({ mode = "create" }) => {
 
             <form onSubmit={handleSubmit}>
               <div className="row g-3">
-                {/* CATEGORY NAME */}
 
                 <div className="col-md-6">
-                  <label className="form-label">Category Name *</label>
+                  <label className="form-label">
+                    {t("categoryForm.categoryName")} *
+                  </label>
 
                   <input
                     type="text"
                     name="name"
                     className="form-control"
-                    placeholder="Example: Tarot Reading"
+                    placeholder={t("categoryForm.namePlaceholder")}
                     value={formData.name}
                     onChange={handleChange}
                     disabled={mode === "view"}
@@ -133,43 +128,43 @@ const CategoryForm = ({ mode = "create" }) => {
                   />
                 </div>
 
-                {/* SUBTITLE */}
-
                 <div className="col-md-6">
-                  <label className="form-label">Subtitle</label>
+                  <label className="form-label">
+                    {t("categoryForm.subtitle")}
+                  </label>
 
                   <input
                     type="text"
                     name="subtitle"
                     className="form-control"
-                    placeholder="Short description"
+                    placeholder={t("categoryForm.subtitlePlaceholder")}
                     value={formData.subtitle}
                     onChange={handleChange}
                     disabled={mode === "view"}
                   />
                 </div>
 
-                {/* TOKEN COST */}
-
                 <div className="col-md-4">
-                  <label className="form-label">Token Cost</label>
+                  <label className="form-label">
+                    {t("categoryForm.tokenCost")}
+                  </label>
 
                   <input
                     type="number"
                     name="token_cost"
                     className="form-control"
                     min="0"
-                    placeholder="Example: 5"
+                    placeholder={t("categoryForm.tokenPlaceholder")}
                     value={formData.token_cost}
                     onChange={handleChange}
                     disabled={mode === "view"}
                   />
                 </div>
 
-                {/* FREE DAILY */}
-
                 <div className="col-md-4">
-                  <label className="form-label">Free Daily Reading</label>
+                  <label className="form-label">
+                    {t("categoryForm.freeDaily")}
+                  </label>
 
                   <select
                     className="form-select"
@@ -177,29 +172,27 @@ const CategoryForm = ({ mode = "create" }) => {
                     onChange={handleFreeDaily}
                     disabled={mode === "view"}
                   >
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
+                    <option value="true">{t("categoryForm.yes")}</option>
+                    <option value="false">{t("categoryForm.no")}</option>
                   </select>
                 </div>
 
-                {/* DESCRIPTION */}
-
                 <div className="col-12">
-                  <label className="form-label">Description</label>
+                  <label className="form-label">
+                    {t("categoryForm.description")}
+                  </label>
 
                   <textarea
                     className="form-control"
                     rows="4"
                     name="description"
-                    placeholder="Write category description..."
+                    placeholder={t("categoryForm.descriptionPlaceholder")}
                     value={formData.description}
                     onChange={handleChange}
                     disabled={mode === "view"}
                   />
                 </div>
               </div>
-
-              {/* BUTTON */}
 
               {mode !== "view" && (
                 <button
@@ -208,10 +201,10 @@ const CategoryForm = ({ mode = "create" }) => {
                   disabled={loading}
                 >
                   {loading
-                    ? "Saving..."
+                    ? t("categoryForm.saving")
                     : mode === "create"
-                      ? "Add Category"
-                      : "Update Category"}
+                    ? t("categoryForm.addBtn")
+                    : t("categoryForm.updateBtn")}
                 </button>
               )}
             </form>

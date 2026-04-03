@@ -1,0 +1,189 @@
+{
+  "dashboard": {
+    "activeUser": "Active User",
+    "totalReadings": "Total Readings",
+    "tokensSold": "Tokens Sold",
+    "aiRequests": "AI Requests",
+    "tokenSales": "Token Sales",
+    "readingTypes": "Reading Types",
+    "recentUsers": "Recent Users",
+    "id": "ID",
+    "user": "User",
+    "email": "Email",
+    "totalReading": "Total Readings",
+    "fromLastMonth": "from last month"
+  },
+
+  "users": {
+    "users": "Users",
+    "searchUser": "Search user...",
+    "page": "Page",
+    "addUser": "Add User",
+    "user": "User",
+    "email": "Email",
+    "tokens": "Tokens",
+    "status": "Status",
+    "actions": "Actions",
+    "loading": "Loading...",
+    "noUsersFound": "No users found",
+    "blocked": "Blocked",
+    "active": "Active",
+    "deleteUserConfirm": "Are you sure you want to delete this user?"
+  },
+
+  "sideBar": {
+    "dashboard": "Dashboard",
+    "users": "Users",
+    "categories": "Categories",
+    "aiPrompt": "AI Prompt",
+    "tokenSettings": "Token Settings",
+    "tokenOverview": "Token Overview",
+    "tokenPackage": "Token Package",
+    "tokenConfig": "Token Config",
+    "readings": "Readings",
+    "tarotCards": "Tarot Cards",
+    "katinaCards": "Katina Cards",
+    "dreams": "Dreams"
+  },
+
+  "categories": {
+    "title": "Categories",
+    "newCategory": "New Category",
+    "entriesPerPage": "entries per page",
+    "search": "Search...",
+    "id": "ID",
+    "name": "Name",
+    "subtitle": "Subtitle",
+    "tokenCost": "Token Cost",
+    "freeDaily": "Free Daily",
+    "readings": "Readings",
+    "status": "Status",
+    "actions": "Actions",
+    "loading": "Loading...",
+    "yes": "Yes",
+    "no": "No",
+    "active": "Active",
+    "disabled": "Disabled",
+    "noCategoriesFound": "No categories found",
+    "deleteConfirm": "Are you sure you want to delete this category?"
+  },
+
+  "userDetails": {
+    "loading": "Loading...",
+    "verified": "Verified",
+    "active": "Active",
+    "inactive": "Inactive",
+    "admin": "Admin",
+
+    "rolePermissions": "Role & Permissions",
+    "adminAccess": "Admin Access",
+    "adminAccessDesc": "Allow this user to access admin dashboard",
+    "createAdmin": "Create Admin",
+
+    "basicInfo": "Basic Information",
+    "gender": "Gender",
+    "dob": "Date of Birth",
+    "zodiac": "Zodiac Sign",
+    "relationship": "Relationship",
+    "joined": "Joined",
+
+    "tokenInfo": "Token Info",
+    "balance": "Balance",
+    "resetTokens": "Reset Tokens",
+    "enterAmount": "Enter amount",
+    "add": "Add",
+    "remove": "Remove",
+    "enterDays": "Enter days",
+    "extend": "Extend",
+
+    "tokenResetSuccess": "Token Reset Successfully",
+    "tokenExtendSuccess": "Extended Expiry Successfully",
+
+    "userSettings": "User Settings",
+    "language": "Language",
+    "notifications": "Notifications",
+    "sound": "Sound",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+
+    "readingsByCategory": "Readings By Category",
+    "recentReadings": "Recent Readings",
+
+    "id": "ID",
+    "question": "Question",
+    "date": "Date"
+  },
+
+  "addUser": {
+    "title": "Add New User",
+    "uploadPhoto": "Upload Photo",
+    "fullName": "Full Name",
+    "email": "Email",
+    "token": "Token",
+    "status": "Status",
+    "active": "Active",
+    "pending": "Pending",
+    "blocked": "Blocked",
+    "addUserBtn": "Add User",
+    "cancel": "Cancel",
+    "namePlaceholder": "John Doe",
+    "emailPlaceholder": "john@example.com",
+    "tokenPlaceholder": "Token"
+  },
+
+  "categoryForm": {
+    "addCategory": "Add Category",
+    "editCategory": "Edit Category",
+    "viewCategory": "View Category",
+
+    "categoryName": "Category Name",
+    "subtitle": "Subtitle",
+    "tokenCost": "Token Cost",
+    "freeDaily": "Free Daily Reading",
+    "description": "Description",
+
+    "yes": "Yes",
+    "no": "No",
+
+    "namePlaceholder": "Example: Tarot Reading",
+    "subtitlePlaceholder": "Short description",
+    "tokenPlaceholder": "Example: 5",
+    "descriptionPlaceholder": "Write category description...",
+
+    "saving": "Saving...",
+    "addBtn": "Add Category",
+    "updateBtn": "Update Category",
+
+    "createSuccess": "Category created successfully",
+    "updateSuccess": "Category updated successfully",
+    "operationFailed": "Operation failed"
+  },
+
+  
+  "aiPrompts": {
+    "title": "AI Prompt Management",
+    "createPrompt": "Create Prompt",
+    "editPrompt": "Edit Prompt",
+    "category": "Category",
+    "promptName": "Prompt Name",
+    "template": "Prompt Template",
+    "namePlaceholder": "Example: Tarot Reading Prompt",
+
+    "saving": "Saving...",
+    "save": "Save Prompt",
+    "update": "Update Prompt",
+    "cancel": "Cancel",
+
+    "tableTitle": "Prompt Templates",
+    "id": "ID",
+    "name": "Name",
+    "editable": "Editable",
+    "locked": "Locked",
+    "actions": "Actions",
+
+    "createdSuccess": "Prompt created successfully",
+    "updatedSuccess": "Prompt updated successfully",
+    "failed": "Failed to save prompt"
+  }
+
+}

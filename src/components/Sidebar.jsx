@@ -1,13 +1,16 @@
 import { NavLink } from "react-router-dom";
 import { useSidebar } from "../App";
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 function Sidebar() {
   const { sidebarCollapsed } = useSidebar();
   const [tokenOpen, setTokenOpen] = useState(false);
   const contentRef = useRef(null);
-
   const [height, setHeight] = useState("0px");
+
+  // ✅ i18n hook
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (tokenOpen) {
@@ -38,30 +41,34 @@ function Sidebar() {
       </div>
 
       <nav className="p-3">
+        {/* Dashboard */}
         <NavLink to="/dashboard" className="nav-link d-flex align-items-center">
           <i className="bi bi-speedometer2"></i>
-          <span className="nav-text">Dashboard</span>
+          <span className="nav-text">{t("sideBar.dashboard")}</span>
         </NavLink>
 
+        {/* Users */}
         <NavLink to="/users" className="nav-link d-flex align-items-center">
           <i className="bi bi-people"></i>
-          <span className="nav-text">Users</span>
+          <span className="nav-text">{t("sideBar.users")}</span>
         </NavLink>
 
+        {/* Categories */}
         <NavLink
           to="/categories"
           className="nav-link d-flex align-items-center"
         >
           <i className="bi bi-folder"></i>
-          <span className="nav-text">Categories</span>
+          <span className="nav-text">{t("sideBar.categories")}</span>
         </NavLink>
 
+        {/* AI Prompt */}
         <NavLink to="/ai-prompt" className="nav-link d-flex align-items-center">
           <i className="bi bi-chat-left-text"></i>
-          <span className="nav-text">AI Prompt</span>
+          <span className="nav-text">{t("sideBar.aiPrompt")}</span>
         </NavLink>
 
-        {/* ✅ TOKEN DROPDOWN */}
+        {/* TOKEN DROPDOWN */}
         <div className="nav-item">
           <div
             className="nav-link d-flex align-items-center justify-content-between"
@@ -70,10 +77,15 @@ function Sidebar() {
           >
             <div className="d-flex align-items-center">
               <i className="bi bi-coin"></i>
-              <span className="nav-text ms-2">Token Settings</span>
+              <span className="nav-text ms-2">
+                {t("sideBar.tokenSettings")}
+              </span>
             </div>
+
             <i
-              className={`bi ${tokenOpen ? "bi-chevron-up" : "bi-chevron-down"}`}
+              className={`bi ${
+                tokenOpen ? "bi-chevron-up" : "bi-chevron-down"
+              }`}
               style={{
                 transition: "transform 0.3s",
                 transform: tokenOpen ? "rotate(180deg)" : "rotate(0deg)",
@@ -81,7 +93,7 @@ function Sidebar() {
             ></i>
           </div>
 
-          {/* Smooth Dropdown */}
+          {/* Dropdown */}
           <div
             ref={contentRef}
             style={{
@@ -96,7 +108,7 @@ function Sidebar() {
                 className="nav-link d-flex align-items-center"
               >
                 <i className="bi bi-bar-chart-line me-2"></i>
-                Token Overview
+                {t("sideBar.tokenOverview")}
               </NavLink>
 
               <NavLink
@@ -104,7 +116,7 @@ function Sidebar() {
                 className="nav-link d-flex align-items-center"
               >
                 <i className="bi bi-box-seam me-2"></i>
-                Token Package
+                {t("sideBar.tokenPackage")}
               </NavLink>
 
               <NavLink
@@ -112,41 +124,41 @@ function Sidebar() {
                 className="nav-link d-flex align-items-center"
               >
                 <i className="bi bi-gear me-2"></i>
-                Token Config
+                {t("sideBar.tokenConfig")}
               </NavLink>
             </div>
           </div>
         </div>
 
+        {/* Readings */}
         <NavLink to="/readings" className="nav-link d-flex align-items-center">
           <i className="bi bi-journal"></i>
-          <span className="nav-text">Readings</span>
+          <span className="nav-text">{t("sideBar.readings")}</span>
         </NavLink>
 
-        {/* <NavLink to="/support" className="nav-link d-flex align-items-center">
-          <i className="bi bi-life-preserver"></i>
-          <span className="nav-text">Support</span>
-        </NavLink> */}
+        {/* Tarot Cards */}
+        <NavLink
+          to="/tarotCards"
+          className="nav-link d-flex align-items-center"
+        >
+          <i className="bi bi-stars me-2"></i>
+          <span className="nav-text">{t("sideBar.tarotCards")}</span>
+        </NavLink>
 
+        {/* Katina Cards */}
+        <NavLink
+          to="/katinaCards"
+          className="nav-link d-flex align-items-center"
+        >
+          <i className="bi bi-gem me-2"></i>
+          <span className="nav-text">{t("sideBar.katinaCards")}</span>
+        </NavLink>
+
+        {/* Dreams */}
         <NavLink to="/dreams" className="nav-link d-flex align-items-center">
           <i className="bi bi-moon-stars me-2"></i>
-          <span className="nav-text">Dreams</span>
+          <span className="nav-text">{t("sideBar.dreams")}</span>
         </NavLink>
-
-      {/* <NavLink to="/cards" className="nav-link d-flex align-items-center">
-  <i className="bi bi-collection me-2"></i>
-  <span className="nav-text">Cards</span>
-</NavLink> */}
-
-<NavLink to="/tarotCards" className="nav-link d-flex align-items-center">
-  <i className="bi bi-stars me-2"></i>
-  <span className="nav-text">Tarot Cards</span>
-</NavLink>
-
-<NavLink to="/katinaCards" className="nav-link d-flex align-items-center">
-  <i className="bi bi-gem me-2"></i>
-  <span className="nav-text">Katina Cards</span>
-</NavLink>
       </nav>
     </aside>
   );
