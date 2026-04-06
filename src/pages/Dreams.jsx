@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { getDreamsApi, deleteDreamApi } from "../api/DreamsAPI";
 
 const Dreams = () => {
+  const { t } = useTranslation();
   const [dreams, setDreams] = useState([]);
   const navigate = useNavigate();
 
@@ -21,7 +23,7 @@ const Dreams = () => {
 
   // ✅ Delete
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this dream?")) return;
+    if (!window.confirm(t("dreams.deleteConfirm"))) return;
 
     try {
       await deleteDreamApi(id);
@@ -41,19 +43,19 @@ const Dreams = () => {
           <div className="card">
             <div className="card-body">
 
-              <h5 className="mb-3">Dreams List</h5>
+              <h5 className="mb-3">{t("dreams.title")}</h5>
 
               <div className="table-responsive">
                 <table className="table table-bordered align-middle">
                   <thead>
                     <tr>
-                      <th>#</th>
-                      <th>User</th>
-                      <th>Email</th>
-                      <th>Question</th>
+                      <th>{t("dreams.index")}</th>
+                      <th>{t("dreams.user")}</th>
+                      <th>{t("dreams.email")}</th>
+                      <th>{t("dreams.question")}</th>
                       {/* <th>Preview</th> */}
-                      <th>Date</th>
-                      <th>Actions</th>
+                      <th>{t("dreams.date")}</th>
+                      <th>{t("dreams.actions")}</th>
                     </tr>
                   </thead>
 
@@ -86,14 +88,14 @@ const Dreams = () => {
                                 className="btn btn-info btn-sm"
                                 onClick={() => handleView(dream.id)}
                               >
-                                View
+                                {t("dreams.view")}
                               </button>
 
                               <button
                                 className="btn btn-danger btn-sm"
                                 onClick={() => handleDelete(dream.id)}
                               >
-                                Delete
+                                {t("dreams.delete")}
                               </button>
                             </div>
                           </td>
@@ -102,7 +104,7 @@ const Dreams = () => {
                     ) : (
                       <tr>
                         <td colSpan="7" className="text-center">
-                          No dreams found
+                          {t("dreams.noDreamsFound")}
                         </td>
                       </tr>
                     )}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next";
 
 const TokenPackageModal = ({
   show,
@@ -7,6 +8,7 @@ const TokenPackageModal = ({
   selectedData,
   onSubmit,
 }) => {
+  const { t } = useTranslation();
   const [form, setForm] = useState({
     name: "",
     tokens: 1,
@@ -71,9 +73,9 @@ const TokenPackageModal = ({
             {/* HEADER */}
             <div className="modal-header">
               <h5 className="modal-title">
-                {mode === "add" && "Add Package"}
-                {mode === "edit" && "Edit Package"}
-                {mode === "view" && "View Package"}
+                {mode === "add" && t("tokenPackageModal.titleAdd")}
+                {mode === "edit" && t("tokenPackageModal.titleEdit")}
+                {mode === "view" && t("tokenPackageModal.titleView")}
               </h5>
 
               <button className="btn-close" onClick={onClose}></button>
@@ -86,7 +88,7 @@ const TokenPackageModal = ({
               <input
                 className="form-control mb-2"
                 name="name"
-                placeholder="Package Name"
+                placeholder={t("tokenPackageModal.packageName")}
                 value={form.name}
                 onChange={handleChange}
                 disabled={isView}
@@ -98,7 +100,7 @@ const TokenPackageModal = ({
                 name="tokens"
                 type="number"
                 min={1}
-                placeholder="Tokens"
+                placeholder={t("tokenPackageModal.tokens")}
                 value={form.tokens}
                 onChange={handleChange}
                 disabled={isView}
@@ -110,7 +112,7 @@ const TokenPackageModal = ({
                 name="price"
                 type="number"
                 min={0}
-                placeholder="Price"
+                placeholder={t("tokenPackageModal.price")}
                 value={form.price}
                 onChange={handleChange}
                 disabled={isView}
@@ -120,7 +122,7 @@ const TokenPackageModal = ({
               <input
                 className="form-control mb-2"
                 name="currency"
-                placeholder="Currency (USD)"
+                placeholder={t("tokenPackageModal.currency")}
                 value={form.currency}
                 onChange={handleChange}
                 disabled={isView}
@@ -137,7 +139,7 @@ const TokenPackageModal = ({
                   disabled={isView}
                 />
                 <label className="form-check-label">
-                  Popular Package
+                  {t("tokenPackageModal.popularPackage")}
                 </label>
               </div>
 
@@ -152,7 +154,7 @@ const TokenPackageModal = ({
                   disabled={isView}
                 />
                 <label className="form-check-label">
-                  Active
+                  {t("tokenPackageModal.active")}
                 </label>
               </div>
 
@@ -161,7 +163,7 @@ const TokenPackageModal = ({
                 className="form-control mb-2"
                 name="sort_order"
                 type="number"
-                placeholder="Sort Order"
+                placeholder={t("tokenPackageModal.sortOrder")}
                 value={form.sort_order}
                 onChange={handleChange}
                 disabled={isView}
@@ -172,7 +174,7 @@ const TokenPackageModal = ({
             {/* FOOTER */}
             <div className="modal-footer">
               <button className="btn btn-secondary" onClick={onClose}>
-                Close
+                {t("tokenPackageModal.closeBtn")}
               </button>
 
               {mode !== "view" && (
@@ -180,7 +182,7 @@ const TokenPackageModal = ({
                   className="btn btn-primary"
                   onClick={() => onSubmit(form)}
                 >
-                  Save
+                  {t("tokenPackageModal.saveBtn")}
                 </button>
               )}
             </div>

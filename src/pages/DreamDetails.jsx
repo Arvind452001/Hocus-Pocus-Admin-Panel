@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { getDreamByIdApi } from "../api/DreamsAPI";
 
 const DreamDetails = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const [dream, setDream] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -22,8 +24,8 @@ const DreamDetails = () => {
     }
   };
 
-  if (loading) return <div className="p-4">Loading...</div>;
-  if (!dream) return <div className="p-4">No Data Found</div>;
+  if (loading) return <div className="p-4">{t("dreamDetails.loading")}</div>;
+  if (!dream) return <div className="p-4">{t("dreamDetails.noDataFound")}</div>;
 
   return (
     <main className="container-fluid mt-0">
@@ -48,14 +50,14 @@ const DreamDetails = () => {
 
               {/* QUESTION */}
               <div className="mb-4">
-                <h6 className="fw-bold mb-2">🧠 Dream Question</h6>
+                <h6 className="fw-bold mb-2">{t("dreamDetails.dreamQuestion")}</h6>
 
                 <div className="p-3 bg-light rounded">{dream.question}</div>
               </div>
 
               {/* RESULT */}
               <div>
-                <h6 className="fw-bold mb-2">🔮 Interpretation</h6>
+                <h6 className="fw-bold mb-2">{t("dreamDetails.interpretation")}</h6>
 
                 <div
                   className="p-3 bg-light rounded"

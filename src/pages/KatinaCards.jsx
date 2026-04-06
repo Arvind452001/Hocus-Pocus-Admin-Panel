@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import CardModal from "../components/CardModal";
 import { getCategoriesApi } from "../api/Api";
@@ -11,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { BASE_URL_CARD } from "../config/apiConfig";
 
 const KatinaCards = () => {
+  const { t } = useTranslation();
   const [cards, setCards] = useState([]);
   const [categories, setCategories] = useState([]);
 
@@ -40,6 +42,16 @@ const KatinaCards = () => {
     },
   ];
 
+  const DEFAULT_IMAGES = [
+  "https://picsum.photos/40/60?random=1",
+  "https://picsum.photos/40/60?random=2",
+  "https://picsum.photos/40/60?random=3",
+  "https://picsum.photos/40/60?random=4",
+];
+
+  const getRandomImage = () => {
+    return DEFAULT_IMAGES[Math.floor(Math.random() * DEFAULT_IMAGES.length)];
+  };
   // ✅ Initial Load
   useEffect(() => {
     fetchCategories();
@@ -160,7 +172,7 @@ const KatinaCards = () => {
   };
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete?");
+    const confirmDelete = window.confirm(t("cards.deleteConfirm"));
     if (!confirmDelete) return;
 
     try {
@@ -182,7 +194,7 @@ const KatinaCards = () => {
         <div className="card-body">
           {/* HEADER */}
           <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-            <h5 className="mb-0">Cards</h5>
+            <h5 className="mb-0">{t("cards.title")}</h5>
 
             <div className="d-flex gap-2 flex-wrap">
               {/* Category */}
@@ -192,7 +204,7 @@ const KatinaCards = () => {
                 value={selectedCategory}
                 onChange={(e) => handleCategoryChange(e.target.value)}
               >
-                <option value="">All Categories</option>
+                <option value="">{t("cards.allCategories")}</option>
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>
                     {cat.name}
@@ -204,7 +216,7 @@ const KatinaCards = () => {
               <input
                 type="text"
                 className="form-control"
-                placeholder="Search..."
+                placeholder={t("cards.search")}
                 value={search}
                 onChange={handleSearch}
                 style={{ width: "180px" }}
@@ -221,154 +233,165 @@ const KatinaCards = () => {
                   )
                 }
               >
-                <option value="">All Status</option>
-                <option value="true">Active</option>
-                <option value="false">Inactive</option>
+                <option value="">{t("cards.allStatus")}</option>
+                <option value="true">{t("cards.active")}</option>
+                <option value="false">{t("cards.inactive")}</option>
               </select>
 
               <button
                 className="btn btn-primary"
                 onClick={() => navigate("/createCard")}
               >
-                + Upload
+                {t("cards.upload")}
               </button>
             </div>
           </div>
 
           {/* TABLE */}
           <div className="table-responsive">
-        <table
-  className="table table-bordered"
-  style={{ tableLayout: "fixed", width: "100%" }}
->
-  <thead>
-    <tr>
-      <th style={{ width: "70px" }}>Image</th>
-      <th style={{ width: "60px" }}>No</th>
-      <th style={{ width: "200px" }}>Name</th>
-      <th>Meaning</th>
-      <th style={{ width: "100px" }}>Status</th>
-      <th style={{ width: "140px" }} className="text-end">
-        Action
-      </th>
-    </tr>
-  </thead>
+            <table
+              className="table table-bordered"
+              style={{ tableLayout: "fixed", width: "100%" }}
+            >
+              <thead>
+                <tr>
+                  <th style={{ width: "70px" }}>{t("cards.image")}</th>
+                  <th style={{ width: "60px" }}>{t("cards.no")}</th>
+                  <th style={{ width: "200px" }}>{t("cards.name")}</th>
+                  <th>{t("cards.meaning")}</th>
+                  <th style={{ width: "100px" }}>{t("cards.status")}</th>
+                  <th style={{ width: "140px" }} className="text-end">
+                    {t("cards.action")}
+                  </th>
+                </tr>
+              </thead>
 
-  <tbody>
-    {cards.map((card) => (
-      <tr key={card.id}>
-        {/* IMAGE */}
-        <td style={{ verticalAlign: "middle" }}>
-          <img
-            src={`${BASE_URL_CARD}/${card.image}`}
-            alt={card.name}
-            style={{
-              width: "40px",
-              height: "60px",
-              borderRadius: "6px",
-              objectFit: "cover",
-            }}
-          />
-        </td>
+              <tbody>
+                {cards.map((card) => (
+                  <tr key={card.id}>
+                    {/* IMAGE */}
+                    <td style={{ verticalAlign: "middle" }}>
+                      <img
+                        src={
+                          card?.image
+                            ? `${BASE_URL_CARD}/${card.image}`
+                            : getRandomImage()
+                        }
+                        alt={card.name}
+                        onError={(e) => {
+                          e.currentTarget.src = getRandomImage(); // fallback if broken
+                        }}
+                        style={{
+                          width: "40px",
+                          height: "60px",
+                          borderRadius: "6px",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </td>
 
-        {/* NO */}
-        <td style={{ verticalAlign: "middle" }}>{card.id}</td>
+                    {/* NO */}
+                    <td style={{ verticalAlign: "middle" }}>{card.id}</td>
 
-        {/* NAME */}
-        <td style={{ verticalAlign: "middle" }}>
-          <div
-            className="fw-bold"
-            style={{
-              maxWidth: "180px",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-            title={card.name}
-          >
-            {card.name}
-          </div>
+                    {/* NAME */}
+                    <td style={{ verticalAlign: "middle" }}>
+                      <div
+                        className="fw-bold"
+                        style={{
+                          maxWidth: "180px",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                        title={card.name}
+                      >
+                        {card.name}
+                      </div>
 
-          <small
-            className="text-muted"
-            style={{
-              display: "block",
-              maxWidth: "180px",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-            title={card.keywords}
-          >
-            {card.keywords}
-          </small>
-        </td>
+                      <small
+                        className="text-muted"
+                        style={{
+                          display: "block",
+                          maxWidth: "180px",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                        title={card.keywords}
+                      >
+                        {card.keywords}
+                      </small>
+                    </td>
 
-        {/* MEANING */}
-        <td
-          style={{
-            verticalAlign: "middle",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {card.meaning}
-        </td>
+                    {/* MEANING */}
+                    <td
+                      style={{
+                        verticalAlign: "middle",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {card.meaning}
+                    </td>
 
-        {/* STATUS */}
-        <td style={{ verticalAlign: "middle" }}>
-          {card.is_active ? (
-            <span className="badge bg-success">Active</span>
-          ) : (
-            <span className="badge bg-secondary">Inactive</span>
-          )}
-        </td>
+                    {/* STATUS */}
+                    <td style={{ verticalAlign: "middle" }}>
+                      {card.is_active ? (
+                        <span className="badge bg-success">
+                          {t("cards.active")}
+                        </span>
+                      ) : (
+                        <span className="badge bg-secondary">
+                          {t("cards.inactive")}
+                        </span>
+                      )}
+                    </td>
 
-        {/* ACTION */}
-        <td
-          className="text-end"
-          style={{ verticalAlign: "middle", whiteSpace: "nowrap" }}
-        >
-          {/* View */}
-          <button
-            className="btn btn-sm me-2"
-            style={{
-              backgroundColor: "#e3f2fd",
-              color: "#0d6efd",
-            }}
-            onClick={() => openModal("view", card)}
-          >
-            <i className="bi bi-eye"></i>
-          </button>
+                    {/* ACTION */}
+                    <td
+                      className="text-end"
+                      style={{ verticalAlign: "middle", whiteSpace: "nowrap" }}
+                    >
+                      {/* View */}
+                      <button
+                        className="btn btn-sm me-2"
+                        style={{
+                          backgroundColor: "#e3f2fd",
+                          color: "#0d6efd",
+                        }}
+                        onClick={() => openModal("view", card)}
+                      >
+                        <i className="bi bi-eye"></i>
+                      </button>
 
-          {/* Edit */}
-          <button
-            className="btn btn-sm me-2"
-            style={{
-              backgroundColor: "#fff3cd",
-              color: "#ffc107",
-            }}
-            onClick={() => openModal("edit", card)}
-          >
-            <i className="bi bi-pencil-square"></i>
-          </button>
+                      {/* Edit */}
+                      <button
+                        className="btn btn-sm me-2"
+                        style={{
+                          backgroundColor: "#fff3cd",
+                          color: "#ffc107",
+                        }}
+                        onClick={() => openModal("edit", card)}
+                      >
+                        <i className="bi bi-pencil-square"></i>
+                      </button>
 
-          {/* Delete */}
-          <button
-            className="btn btn-sm"
-            style={{
-              backgroundColor: "#f8d7da",
-              color: "#dc3545",
-            }}
-            onClick={() => handleDelete(card.id)}
-          >
-            <i className="bi bi-trash"></i>
-          </button>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
+                      {/* Delete */}
+                      <button
+                        className="btn btn-sm"
+                        style={{
+                          backgroundColor: "#f8d7da",
+                          color: "#dc3545",
+                        }}
+                        onClick={() => handleDelete(card.id)}
+                      >
+                        <i className="bi bi-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
           {/* PAGINATION */}
@@ -378,16 +401,18 @@ const KatinaCards = () => {
               disabled={page === 1}
               onClick={() => setPage((prev) => prev - 1)}
             >
-              Prev
+              {t("cards.prev")}
             </button>
 
-            <span>Page {page}</span>
+            <span>
+              {t("cards.page")} {page}
+            </span>
 
             <button
               className="btn btn-outline-secondary btn-sm"
               onClick={() => setPage((prev) => prev + 1)}
             >
-              Next
+              {t("cards.next")}
             </button>
           </div>
         </div>

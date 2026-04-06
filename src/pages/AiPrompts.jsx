@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { createPromptApi, getPromptsApi, updatePromptApi } from "../api/Api";
 
 const AiPrompts = () => {
+  const { t } = useTranslation();
   const [prompts, setPrompts] = useState([]);
   const [editingId, setEditingId] = useState(null);
 
@@ -84,11 +86,11 @@ Provide a detailed spiritual interpretation and guidance.`,
       if (editingId) {
         await updatePromptApi(editingId, payload);
 
-        alert("Prompt updated successfully");
+        alert(t("aiPrompts.updatedSuccess"));
       } else {
         await createPromptApi(payload);
 
-        alert("Prompt created successfully");
+        alert(t("aiPrompts.createdSuccess"));
       }
 
       setEditingId(null);
@@ -102,7 +104,7 @@ Provide a detailed spiritual interpretation and guidance.`,
       fetchPrompts();
     } catch (error) {
       console.error("Prompt save failed", error);
-      alert("Failed to save prompt");
+      alert(t("aiPrompts.failed"));
     } finally {
       setLoading(false);
     }
@@ -126,7 +128,7 @@ Provide a detailed spiritual interpretation and guidance.`,
         className="page"
         style={{ maxWidth: "1100px", margin: "auto", padding: "0px" }}
       >
-        <h3 className="mb-4">AI Prompt Management</h3>
+        <h3 className="mb-4">{t("aiPrompts.title")}</h3>
 
         {/* ================= PROMPT FORM ================= */}
 
@@ -140,7 +142,7 @@ Provide a detailed spiritual interpretation and guidance.`,
           }}
         >
           <h5 className="mb-3">
-            {editingId ? "Edit Prompt" : "Create Prompt"}
+            {editingId ? t("aiPrompts.editPrompt") : t("aiPrompts.createPrompt")}
           </h5>
 
           <form onSubmit={handleSubmit}>
@@ -148,7 +150,7 @@ Provide a detailed spiritual interpretation and guidance.`,
               {/* CATEGORY */}
 
               <div className="col-md-6">
-                <label className="form-label">Category</label>
+                <label className="form-label">{t("aiPrompts.category")}</label>
 
                 <select
                   className="form-select"
@@ -167,12 +169,12 @@ Provide a detailed spiritual interpretation and guidance.`,
               {/* PROMPT NAME */}
 
               <div className="col-md-6">
-                <label className="form-label">Prompt Name</label>
+                <label className="form-label">{t("aiPrompts.promptName")}</label>
 
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Example: Tarot Reading Prompt"
+                  placeholder={t("aiPrompts.namePlaceholder")}
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
@@ -183,7 +185,7 @@ Provide a detailed spiritual interpretation and guidance.`,
               {/* TEMPLATE */}
 
               <div className="col-12">
-                <label className="form-label">Prompt Template</label>
+                <label className="form-label">{t("aiPrompts.template")}</label>
 
                 <textarea
                   className="form-control"
@@ -206,10 +208,10 @@ Provide a detailed spiritual interpretation and guidance.`,
                 <i className="bi bi-save"></i>
 
                 {loading
-                  ? " Saving..."
+                  ? " " + t("aiPrompts.saving")
                   : editingId
-                    ? " Update Prompt"
-                    : " Save Prompt"}
+                    ? " " + t("aiPrompts.update")
+                    : " " + t("aiPrompts.save")}
               </button>
 
               {editingId && (
@@ -218,7 +220,7 @@ Provide a detailed spiritual interpretation and guidance.`,
                   className="btn btn-secondary ms-2"
                   onClick={handleCancelEdit}
                 >
-                  Cancel
+                  {t("aiPrompts.cancel")}
                 </button>
               )}
             </div>
@@ -235,15 +237,15 @@ Provide a detailed spiritual interpretation and guidance.`,
             boxShadow: "0 4px 14px rgba(0,0,0,0.06)",
           }}
         >
-          <h5 className="mb-3">Prompt Templates</h5>
+          <h5 className="mb-3">{t("aiPrompts.tableTitle")}</h5>
 
           <table className="table align-middle">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Editable</th>
-                <th>Actions</th>
+                <th>{t("aiPrompts.id")}</th>
+                <th>{t("aiPrompts.name")}</th>
+                <th>{t("aiPrompts.editable")}</th>
+                <th>{t("aiPrompts.actions")}</th>
               </tr>
             </thead>
 
@@ -256,9 +258,9 @@ Provide a detailed spiritual interpretation and guidance.`,
 
                   <td>
                     {p.editable ? (
-                      <span className="badge bg-success">Editable</span>
+                      <span className="badge bg-success">{t("aiPrompts.editable")}</span>
                     ) : (
-                      <span className="badge bg-secondary">Locked</span>
+                      <span className="badge bg-secondary">{t("aiPrompts.locked")}</span>
                     )}
                   </td>
 

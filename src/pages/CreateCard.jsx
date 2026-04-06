@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { BASE_URL } from "../config/apiConfig";
  
 const CreateCard = () => {
+  const { t } = useTranslation();
   const [form, setForm] = useState({
     category_id: 1,
     name: "",
@@ -51,7 +53,7 @@ const CreateCard = () => {
       if (form.file) {
         formData.append("image", form.file);
       } else {
-        alert("Image required");
+        alert(t("createCard.imageRequired"));
         return;
       }
 
@@ -72,23 +74,23 @@ const CreateCard = () => {
       );
 
       // console.log("SUCCESS ✅", res.data);
-      alert("Card Created Successfully");
+      alert(t("createCard.createdSuccess"));
 
     } catch (error) {
       // console.log("ERROR ❌", error.response?.data || error);
-      alert("Error creating card");
+      alert(t("createCard.createError"));
     }
   };
 
   return (
     <div className="container mt-4">
       <div className="card p-4">
-        <h4>Create Card</h4>
+        <h4>{t("createCard.title")}</h4>
 
         <form onSubmit={handleSubmit}>
           {/* Category */}
           <div className="mb-3">
-            <label>Category ID</label>
+            <label>{t("createCard.categoryId")}</label>
             <input
               type="number"
               className="form-control"
@@ -100,7 +102,7 @@ const CreateCard = () => {
 
           {/* Name */}
           <div className="mb-3">
-            <label>Name *</label>
+            <label>{t("createCard.name")}</label>
             <input
               type="text"
               className="form-control"
@@ -112,7 +114,7 @@ const CreateCard = () => {
 
           {/* Meaning */}
           <div className="mb-3">
-            <label>Meaning *</label>
+            <label>{t("createCard.meaning")}</label>
             <textarea
               className="form-control"
               name="meaning"
@@ -123,7 +125,7 @@ const CreateCard = () => {
 
           {/* Keywords */}
           <div className="mb-3">
-            <label>Keywords</label>
+            <label>{t("createCard.keywords")}</label>
             <input
               type="text"
               className="form-control"
@@ -135,7 +137,7 @@ const CreateCard = () => {
 
           {/* Description */}
           <div className="mb-3">
-            <label>Description</label>
+            <label>{t("createCard.description")}</label>
             <textarea
               className="form-control"
               name="description"
@@ -146,7 +148,7 @@ const CreateCard = () => {
 
           {/* Image */}
           <div className="mb-3">
-            <label>Upload Image *</label>
+            <label>{t("createCard.uploadImage")}</label>
             <input
               type="file"
               className="form-control"
@@ -164,7 +166,7 @@ const CreateCard = () => {
           )}
 
           <div className="d-flex justify-content-end">
-  <button className="btn btn-primary">Create Card</button>
+  <button className="btn btn-primary">{t("createCard.createBtn")}</button>
 </div>
         </form>
       </div>

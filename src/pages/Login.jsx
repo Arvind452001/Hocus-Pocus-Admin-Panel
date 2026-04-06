@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { loginApi } from "../api/Api";
 
 function Login() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -105,7 +107,7 @@ function Login() {
             className="text-center mb-4"
             style={{ fontWeight: 600, color: "#333" }}
           >
-            Admin Login
+            {t("login.title")}
           </h4>
 
           {error && (
@@ -115,13 +117,13 @@ function Login() {
           <form onSubmit={handleLogin}>
             <div className="mb-3">
               <label className="form-label" style={{ fontWeight: 500 }}>
-                Email
+                {t("login.email")}
               </label>
               <input
                 type="email"
                 name="email"
                 className="form-control"
-                placeholder="admin@example.com"
+                placeholder={t("login.emailPlaceholder")}
                 value={formData.email}
                 onChange={handleChange}
                 style={{
@@ -134,13 +136,13 @@ function Login() {
 
             <div className="mb-4">
               <label className="form-label" style={{ fontWeight: 500 }}>
-                Password
+                {t("login.password")}
               </label>
               <input
                 type="password"
                 name="password"
                 className="form-control"
-                placeholder="••••••"
+                placeholder={t("login.passwordPlaceholder")}
                 value={formData.password}
                 onChange={handleChange}
                 style={{
@@ -166,7 +168,7 @@ function Login() {
                 opacity: loading ? 0.8 : 1,
               }}
             >
-              {loading ? "Logging in..." : "Login"}
+              {loading ? t("login.loggingIn") : t("login.loginBtn")}
             </button>
           </form>
         </div>

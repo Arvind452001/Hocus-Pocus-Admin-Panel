@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 // ✅ Dummy API
 const submitSupportApi = (data) => {
@@ -7,6 +8,7 @@ const submitSupportApi = (data) => {
 };
 
 const Support = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -29,7 +31,7 @@ const Support = () => {
     e.preventDefault();
 
     if (!formData.name || !formData.email || !formData.message) {
-      alert("Please fill all required fields");
+      alert(t("support.fillRequired"));
       return;
     }
 
@@ -37,7 +39,7 @@ const Support = () => {
       setLoading(true);
       const res = await submitSupportApi(formData);
       // console.log(res);
-      alert("Request submitted successfully ✅");
+      alert(t("support.requestSuccess"));
 
       // reset form
       setFormData({
@@ -48,7 +50,7 @@ const Support = () => {
       });
     } catch (err) {
       console.error(err);
-      alert("Something went wrong ❌");
+      alert(t("support.requestError"));
     } finally {
       setLoading(false);
     }
@@ -75,17 +77,17 @@ const Support = () => {
                 `}</style>
 
               <div className="d-flex border-bottom justify-content-between align-items-center mb-3 pb-3">
-                <h5 className="mb-0">Support</h5>
+                <h5 className="mb-0">{t("support.title")}</h5>
               </div>
 
               <div className="container">
-                <p className="mb-3 fw-bold">Please submit your query</p>
+                <p className="mb-3 fw-bold">{t("support.queryHeading")}</p>
 
                 <div className="row justify-content-center">
                   <div className="col-md-12">
                     <form onSubmit={handleSubmit}>
                       <div className="mb-0">
-                        <label className="form-label">Your Name</label>
+                        <label className="form-label">{t("support.yourName")}</label>
                         <input
                           className="form-control"
                           type="text"
@@ -96,7 +98,7 @@ const Support = () => {
                       </div>
 
                       <div className="mb-3">
-                        <label className="form-label">Email</label>
+                        <label className="form-label">{t("support.email")}</label>
                         <input
                           className="form-control"
                           type="email"
@@ -107,7 +109,7 @@ const Support = () => {
                       </div>
 
                       <div className="mb-3">
-                        <label className="form-label">Subject</label>
+                        <label className="form-label">{t("support.subject")}</label>
                         <input
                           className="form-control"
                           type="text"
@@ -118,7 +120,7 @@ const Support = () => {
                       </div>
 
                       <div className="mb-3">
-                        <label className="form-label">Message</label>
+                        <label className="form-label">{t("support.message")}</label>
                         <textarea
                           className="form-control"
                           rows="4"
@@ -133,7 +135,7 @@ const Support = () => {
                         type="submit"
                         disabled={loading}
                       >
-                        {loading ? "Submitting..." : "Submit Request"}
+                        {loading ? t("support.submitting") : t("support.submitBtn")}
                       </button>
                     </form>
                   </div>

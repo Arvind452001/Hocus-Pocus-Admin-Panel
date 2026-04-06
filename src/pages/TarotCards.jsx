@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import CardModal from "../components/CardModal";
 import { getCategoriesApi } from "../api/Api";
@@ -7,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { BASE_URL, BASE_URL_CARD } from "../config/apiConfig";
 
 const TarotCards = () => {
+  const { t } = useTranslation();
   const [cards, setCards] = useState([]);
   const [categories, setCategories] = useState([]);
 
@@ -36,6 +38,16 @@ const TarotCards = () => {
     },
   ];
 
+    const DEFAULT_IMAGES = [
+  "https://picsum.photos/40/60?random=1",
+  "https://picsum.photos/40/60?random=2",
+  "https://picsum.photos/40/60?random=3",
+  "https://picsum.photos/40/60?random=4",
+];
+const getRandomImage = () => {
+  return DEFAULT_IMAGES[Math.floor(Math.random() * DEFAULT_IMAGES.length)];
+};
+const fallbackImage = useMemo(() => getRandomImage(), []);
   // ✅ Initial Load
   useEffect(() => {
     fetchCategories();
@@ -156,7 +168,7 @@ const TarotCards = () => {
   };
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete?");
+    const confirmDelete = window.confirm(t("cards.deleteConfirm"));
     if (!confirmDelete) return;
 
     try {
@@ -178,7 +190,7 @@ const TarotCards = () => {
         <div className="card-body">
           {/* HEADER */}
           <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-            <h5 className="mb-0">Tarot Cards</h5>
+            <h5 className="mb-0">{t("tarotCards.title")}</h5>
 
             <div className="d-flex gap-2 flex-wrap">
               {/* Category */}
@@ -188,7 +200,7 @@ const TarotCards = () => {
                 value={selectedCategory}
                 onChange={(e) => handleCategoryChange(e.target.value)}
               >
-                <option value="">All Categories</option>
+                <option value="">{t("cards.allCategories")}</option>
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>
                     {cat.name}
@@ -200,7 +212,7 @@ const TarotCards = () => {
               <input
                 type="text"
                 className="form-control"
-                placeholder="Search..."
+                placeholder={t("cards.search")}
                 value={search}
                 onChange={handleSearch}
                 style={{ width: "180px" }}
@@ -217,16 +229,16 @@ const TarotCards = () => {
                   )
                 }
               >
-                <option value="">All Status</option>
-                <option value="true">Active</option>
-                <option value="false">Inactive</option>
+                <option value="">{t("cards.allStatus")}</option>
+                <option value="true">{t("cards.active")}</option>
+                <option value="false">{t("cards.inactive")}</option>
               </select>
 
               <button
                 className="btn btn-primary"
                 onClick={() => navigate("/createCard")}
               >
-                + Upload
+                {t("cards.upload")}
               </button>
             </div>
           </div>
@@ -236,13 +248,13 @@ const TarotCards = () => {
             <table className="table table-bordered">
               <thead>
                 <tr>
-                  <th>Image</th>
-                  <th>No</th>
-                  <th>Name</th>
-                  <th>Arcana</th>
-                  <th>Suit</th>
-                  <th>Element</th>
-                  <th className="text-end">Action</th>
+                  <th>{t("cards.image")}</th>
+                  <th>{t("cards.no")}</th>
+                  <th>{t("cards.name")}</th>
+                  <th>{t("cards.arcana")}</th>
+                  <th>{t("cards.suit")}</th>
+                  <th>{t("cards.element")}</th>
+                  <th className="text-end">{t("cards.action")}</th>
                 </tr>
               </thead>
 
@@ -250,7 +262,7 @@ const TarotCards = () => {
                 {cards.length === 0 ? (
                   <tr>
                     <td colSpan="7" className="text-center text-muted">
-                      No Cards Found
+                      {t("cards.noCardsFound")}
                     </td>
                   </tr>
                 ) : (
@@ -258,16 +270,23 @@ const TarotCards = () => {
                     <tr key={card.id}>
                       {/* IMAGE */}
                       <td>
-                        <img
-                          src={`${BASE_URL_CARD}/tarot-images/${card.image_file}`} // 🔥 change base URL
-                          // alt={card.name}
-                          style={{
-                            width: "40px",
-                            height: "60px",
-                            borderRadius: "6px",
-                            objectFit: "cover",
-                          }}
-                        />
+                       <img
+  src={
+    card?.image_file
+      ? `${BASE_URL_CARD}/tarot-images/${card.image_file}`
+      : getRandomImage()
+  }
+  alt={card?.name || "card"}
+  onError={(e) => {
+    e.currentTarget.src = fallbackImage;
+  }}
+  style={{
+    width: "40px",
+    height: "60px",
+    borderRadius: "6px",
+    objectFit: "cover",
+  }}
+/>
                       </td>
 
                       {/* CARD NUMBER */}
@@ -344,16 +363,16 @@ const TarotCards = () => {
               disabled={page === 1}
               onClick={() => setPage((prev) => prev - 1)}
             >
-              Prev
+              {t("cards.prev")}
             </button>
 
-            <span>Page {page}</span>
+            <span>{t("cards.page")} {page}</span>
 
             <button
               className="btn btn-outline-secondary btn-sm"
               onClick={() => setPage((prev) => prev + 1)}
             >
-              Next
+              {t("cards.next")}
             </button>
           </div>
         </div>

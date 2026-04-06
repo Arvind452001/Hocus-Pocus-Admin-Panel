@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import CardModal from "../components/CardModal";
 import { getCategoriesApi } from "../api/Api";
@@ -7,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { BASE_URL_CARD } from "../config/apiConfig";
 
 const Cards = () => {
+  const { t } = useTranslation();
   const [cards, setCards] = useState([]);
   const [categories, setCategories] = useState([]);
 
@@ -157,7 +159,7 @@ const Cards = () => {
   };
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete?");
+    const confirmDelete = window.confirm(t("cards.deleteConfirm"));
     if (!confirmDelete) return;
 
     try {
@@ -179,7 +181,7 @@ const Cards = () => {
         <div className="card-body">
           {/* HEADER */}
           <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-            <h5 className="mb-0">Cards</h5>
+            <h5 className="mb-0">{t("cards.title")}</h5>
 
             <div className="d-flex gap-2 flex-wrap">
               {/* Category */}
@@ -189,7 +191,7 @@ const Cards = () => {
                 value={selectedCategory}
                 onChange={(e) => handleCategoryChange(e.target.value)}
               >
-                <option value="">All Categories</option>
+                <option value="">{t("cards.allCategories")}</option>
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>
                     {cat.name}
@@ -201,7 +203,7 @@ const Cards = () => {
               <input
                 type="text"
                 className="form-control"
-                placeholder="Search..."
+                placeholder={t("cards.search")}
                 value={search}
                 onChange={handleSearch}
                 style={{ width: "180px" }}
@@ -218,16 +220,16 @@ const Cards = () => {
                   )
                 }
               >
-                <option value="">All Status</option>
-                <option value="true">Active</option>
-                <option value="false">Inactive</option>
+                <option value="">{t("cards.allStatus")}</option>
+                <option value="true">{t("cards.active")}</option>
+                <option value="false">{t("cards.inactive")}</option>
               </select>
 
               <button
                 className="btn btn-primary"
                 onClick={() => navigate("/createCard")}
               >
-                + Upload
+                {t("cards.upload")}
               </button>
             </div>
           </div>
@@ -237,13 +239,13 @@ const Cards = () => {
             <table className="table table-bordered">
               <thead>
                 <tr>
-                  <th>Image</th>
-                  <th>No</th>
-                  <th>Name</th>
-                  <th>Arcana</th>
-                  <th>Suit</th>
-                  <th>Element</th>
-                  <th className="text-end">Action</th>
+                  <th>{t("cards.image")}</th>
+                  <th>{t("cards.no")}</th>
+                  <th>{t("cards.name")}</th>
+                  <th>{t("cards.arcana")}</th>
+                  <th>{t("cards.suit")}</th>
+                  <th>{t("cards.element")}</th>
+                  <th className="text-end">{t("cards.action")}</th>
                 </tr>
               </thead>
 
@@ -251,7 +253,7 @@ const Cards = () => {
                 {cards.length === 0 ? (
                   <tr>
                     <td colSpan="7" className="text-center text-muted">
-                      No Cards Found
+                      {t("cards.noCardsFound")}
                     </td>
                   </tr>
                 ) : (
@@ -345,16 +347,16 @@ const Cards = () => {
               disabled={page === 1}
               onClick={() => setPage((prev) => prev - 1)}
             >
-              Prev
+              {t("cards.prev")}
             </button>
 
-            <span>Page {page}</span>
+            <span>{t("cards.page")} {page}</span>
 
             <button
               className="btn btn-outline-secondary btn-sm"
               onClick={() => setPage((prev) => prev + 1)}
             >
-              Next
+              {t("cards.next")}
             </button>
           </div>
         </div>

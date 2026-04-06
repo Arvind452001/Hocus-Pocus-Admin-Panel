@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const AddPrompts = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     category: "Tarot Reading",
     name: "",
@@ -33,12 +35,12 @@ Provide a detailed spiritual interpretation and guidance.`,
         <div className="page-section">
           <div className="card">
             <div className="card-body">
-              <h5 className="mb-4">Add New Prompt</h5>
+              <h5 className="mb-4">{t("addPrompts.title")}</h5>
 
               <form onSubmit={handleSubmit}>
                 <div className="row g-3">
                   <div className="col-md-6">
-                    <label className="form-label">Category</label>
+                    <label className="form-label">{t("addPrompts.category")}</label>
 
                     <select
                       className="form-select"
@@ -46,20 +48,20 @@ Provide a detailed spiritual interpretation and guidance.`,
                       value={formData.category}
                       onChange={handleChange}
                     >
-                      <option>Tarot Reading</option>
-                      <option>Dream Interpretation</option>
-                      <option>Coffee Reading</option>
-                      <option>Fortune Prediction</option>
+                      <option>{t("addPrompts.tarotReading")}</option>
+                      <option>{t("addPrompts.dreamInterpretation")}</option>
+                      <option>{t("addPrompts.coffeeReading")}</option>
+                      <option>{t("addPrompts.fortunePrediction")}</option>
                     </select>
                   </div>
 
                   <div className="col-md-6">
-                    <label className="form-label">Prompt Name</label>
+                    <label className="form-label">{t("addPrompts.promptName")}</label>
 
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="Example: Tarot Reading Prompt"
+                      placeholder={t("addPrompts.examplePlaceholder")}
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
@@ -67,7 +69,7 @@ Provide a detailed spiritual interpretation and guidance.`,
                   </div>
 
                   <div className="col-12">
-                    <label className="form-label">Prompt Template</label>
+                    <label className="form-label">{t("addPrompts.promptTemplate")}</label>
 
                     <textarea
                       className="form-control"
@@ -80,7 +82,7 @@ Provide a detailed spiritual interpretation and guidance.`,
                 </div>
 
                 <button className="btn btn-primary mt-3" type="submit">
-                  <i className="bi bi-save"></i> Save Prompt
+                  <i className="bi bi-save"></i> {t("addPrompts.savePrompt")}
                 </button>
               </form>
             </div>

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
+  const { t } = useTranslation();
   const isView = mode === "view";
   const isEdit = mode === "edit";
   const isAdd = mode === "add";
@@ -89,9 +91,9 @@ const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
             {/* HEADER */}
             <div className="modal-header">
               <h5 className="fw-bold">
-                {isAdd && "Add Card"}
-                {isEdit && "Edit Card"}
-                {isView && "View Card"}
+                {isAdd && t("cardModal.titleAdd")}
+                {isEdit && t("cardModal.titleEdit")}
+                {isView && t("cardModal.titleView")}
               </h5>
               <button className="btn-close" onClick={onClose}></button>
             </div>
@@ -102,7 +104,7 @@ const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
 
                 {/* Name */}
                 <div className="col-md-6 mb-3">
-                  <label className="form-label">Name</label>
+                  <label className="form-label">{t("cardModal.name")}</label>
                   <input
                     className="form-control"
                     name="name"
@@ -114,7 +116,7 @@ const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
 
                 {/* Turkish Name */}
                 <div className="col-md-6 mb-3">
-                  <label className="form-label">Turkish Name</label>
+                  <label className="form-label">{t("cardModal.turkishName")}</label>
                   <input
                     className="form-control"
                     name="turkish_name"
@@ -126,7 +128,7 @@ const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
 
                 {/* Card Number */}
                 <div className="col-md-4 mb-3">
-                  <label className="form-label">Card Number</label>
+                  <label className="form-label">{t("cardModal.cardNumber")}</label>
                   <input
                     className="form-control"
                     name="card_number"
@@ -138,7 +140,7 @@ const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
 
                 {/* Arcana */}
                 <div className="col-md-4 mb-3">
-                  <label className="form-label">Arcana</label>
+                  <label className="form-label">{t("cardModal.arcana")}</label>
                   <select
                     className="form-select"
                     name="arcana"
@@ -146,14 +148,14 @@ const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
                     onChange={handleChange}
                     disabled={isView}
                   >
-                    <option value="Major">Major</option>
-                    <option value="Minor">Minor</option>
+                    <option value="Major">{t("cardModal.major")}</option>
+                    <option value="Minor">{t("cardModal.minor")}</option>
                   </select>
                 </div>
 
                 {/* Suit */}
                 <div className="col-md-4 mb-3">
-                  <label className="form-label">Suit</label>
+                  <label className="form-label">{t("cardModal.suit")}</label>
                   <input
                     className="form-control"
                     name="suit"
@@ -165,7 +167,7 @@ const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
 
                 {/* Element */}
                 <div className="col-md-4 mb-3">
-                  <label className="form-label">Element</label>
+                  <label className="form-label">{t("cardModal.element")}</label>
                   <input
                     className="form-control"
                     name="element"
@@ -177,7 +179,7 @@ const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
 
                 {/* Keywords */}
                 <div className="col-md-8 mb-3">
-                  <label className="form-label">Keywords</label>
+                  <label className="form-label">{t("cardModal.keywords")}</label>
                   <input
                     className="form-control"
                     name="keywords"
@@ -189,7 +191,7 @@ const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
 
                 {/* Meaning */}
                 <div className="col-md-12 mb-3">
-                  <label className="form-label">Meaning</label>
+                  <label className="form-label">{t("cardModal.meaning")}</label>
                   <textarea
                     className="form-control"
                     rows="2"
@@ -202,7 +204,7 @@ const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
 
                 {/* Upright */}
                 <div className="col-md-6 mb-3">
-                  <label className="form-label">Upright Meaning</label>
+                  <label className="form-label">{t("cardModal.uprightMeaning")}</label>
                   <textarea
                     className="form-control"
                     rows="3"
@@ -215,7 +217,7 @@ const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
 
                 {/* Reversed */}
                 <div className="col-md-6 mb-3">
-                  <label className="form-label">Reversed Meaning</label>
+                  <label className="form-label">{t("cardModal.reversedMeaning")}</label>
                   <textarea
                     className="form-control"
                     rows="3"
@@ -229,7 +231,7 @@ const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
                 {/* File Upload */}
                 {!isView && (
                   <div className="col-md-12 mb-3">
-                    <label className="form-label">Upload Image</label>
+                    <label className="form-label">{t("cardModal.uploadImage")}</label>
                     <input
                       type="file"
                       className="form-control"
@@ -244,12 +246,12 @@ const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
             {/* FOOTER */}
             <div className="modal-footer">
               <button className="btn btn-secondary" onClick={onClose}>
-                Close
+                {t("cardModal.closeBtn")}
               </button>
 
               {!isView && (
                 <button className="btn btn-primary" onClick={handleSubmit}>
-                  {isAdd ? "Save" : "Update"}
+                  {isAdd ? t("cardModal.saveBtn") : t("cardModal.updateBtn")}
                 </button>
               )}
             </div>

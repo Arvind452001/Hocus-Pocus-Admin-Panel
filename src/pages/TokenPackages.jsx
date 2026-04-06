@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import TokenPackageModal from "../components/TokenPackageModal";
 import {
@@ -10,6 +11,7 @@ import {
 } from "../api/TokenAPIs";
 
 const TokenPackages = () => {
+  const { t } = useTranslation();
   const [packages, setPackages] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [mode, setMode] = useState("add");
@@ -47,7 +49,7 @@ const TokenPackages = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this package?"))
+    if (!window.confirm(t("tokenPackages.deleteConfirm")))
       return;
 
     try {
@@ -66,7 +68,7 @@ const TokenPackages = () => {
       fetchPackages();
 
       // optional
-      alert("Package marked as popular");
+      alert(t("tokenPackages.markedPopular"));
     } catch (err) {
       console.log(err?.response?.data || err.message);
     }
@@ -78,13 +80,13 @@ const TokenPackages = () => {
           <div className="card-body">
             {/* HEADER */}
             <div className="d-flex justify-content-between mb-3">
-              <h5>Token Packages</h5>
+              <h5>{t("tokenPackages.title")}</h5>
 
               <button
                 className="btn btn-primary"
                 onClick={() => openModal("add")}
               >
-                + Add Package
+                {t("tokenPackages.addPackage")}
               </button>
             </div>
 
@@ -92,10 +94,10 @@ const TokenPackages = () => {
             <table className="table table-bordered">
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Tokens</th>
-                  <th>Price</th>
-                  <th>Actions</th>
+                  <th>{t("tokenPackages.name")}</th>
+                  <th>{t("tokenPackages.tokens")}</th>
+                  <th>{t("tokenPackages.price")}</th>
+                  <th>{t("tokenPackages.actions")}</th>
                 </tr>
               </thead>
 
@@ -139,7 +141,7 @@ const TokenPackages = () => {
                           onClick={() => handleSetPopular(pkg.id)}
                         >
                           <i className="bi bi-star-fill me-1"></i>
-                          {pkg.is_popular ? "Popular" : "Make Popular"}
+                          {pkg.is_popular ? t("tokenPackages.popular") : t("tokenPackages.makePopular")}
                         </button>
                       </div>
                     </td>

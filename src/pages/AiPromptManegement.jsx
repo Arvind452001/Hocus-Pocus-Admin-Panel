@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const AiPromptManegement = () => {
+  const { t } = useTranslation();
 
   const [search, setSearch] = useState("");
   const [entries, setEntries] = useState(10);
@@ -25,10 +27,10 @@ const AiPromptManegement = () => {
               <div className="card-body">
 
                 <div className="d-flex justify-content-between align-items-center mb-3">
-                  <h5 className="mb-0">Prompt Templates</h5>
+                  <h5 className="mb-0">{t("aiPromptManagement.promptTemplates")}</h5>
 
                   <a href="/add-prompt" className="btn btn-primary">
-                    New Prompt
+                    {t("aiPromptManagement.newPrompt")}
                   </a>
                 </div>
 
@@ -52,7 +54,7 @@ const AiPromptManegement = () => {
                       <option value="50">50</option>
                     </select>
 
-                    <span>entries</span>
+                    <span>{t("aiPromptManagement.entries")}</span>
 
                   </div>
 
@@ -72,7 +74,7 @@ const AiPromptManegement = () => {
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="Search..."
+                      placeholder={t("aiPromptManagement.search")}
                       style={{ paddingLeft: "32px", width: "220px" }}
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
@@ -87,11 +89,11 @@ const AiPromptManegement = () => {
 
                     <thead>
                       <tr>
-                        <th>ID</th>
-                        <th>Prompt Name</th>
-                        <th>Category</th>
-                        <th>Last Updated</th>
-                        <th>Actions</th>
+                        <th>{t("aiPromptManagement.id")}</th>
+                        <th>{t("aiPromptManagement.promptName")}</th>
+                        <th>{t("aiPromptManagement.category")}</th>
+                        <th>{t("aiPromptManagement.lastUpdated")}</th>
+                        <th>{t("aiPromptManagement.actions")}</th>
                       </tr>
                     </thead>
 

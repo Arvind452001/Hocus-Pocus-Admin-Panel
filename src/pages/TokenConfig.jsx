@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { getTokenConfigApi, updateTokenConfigApi } from "../api/TokenAPIs";
 
 const TokenConfig = () => {
+  const { t } = useTranslation();
   const [config, setConfig] = useState({
     daily_free_limit: 0,
     ad_reward_tokens: 0,
@@ -45,13 +47,13 @@ const TokenConfig = () => {
       const res = await updateTokenConfigApi(config);
 
       if (res.data?.status === 1) {
-        alert("Config Updated Successfully ✅");
+        alert(t("tokenConfig.updateSuccess"));
       } else {
-        alert("Update Failed ❌");
+        alert(t("tokenConfig.updateFailed"));
       }
     } catch (err) {
       console.error(err);
-      alert("Error occurred");
+      alert(t("tokenConfig.errorOccurred"));
     } finally {
       setLoading(false);
     }
@@ -64,12 +66,12 @@ const TokenConfig = () => {
           <div className="col-lg-6 col-md-8">
             <div className="card shadow-sm">
               <div className="card-body p-4">
-                <h5 className="mb-4">Token Configuration</h5>
+                <h5 className="mb-4">{t("tokenConfig.title")}</h5>
 
                 <form onSubmit={handleSubmit}>
                   {/* Daily Free Limit */}
                   <div className="mb-3">
-                    <label className="form-label">Daily Free Limit</label>
+                    <label className="form-label">{t("tokenConfig.dailyFreeLimit")}</label>
                     <input
                       type="number"
                       name="daily_free_limit"
@@ -80,13 +82,13 @@ const TokenConfig = () => {
                       required
                     />
                     <small className="text-muted">
-                      Number of free actions per day
+                      {t("tokenConfig.dailyFreeDesc")}
                     </small>
                   </div>
 
                   {/* Ad Reward Tokens */}
                   <div className="mb-3">
-                    <label className="form-label">Ad Reward Tokens</label>
+                    <label className="form-label">{t("tokenConfig.adRewardTokens")}</label>
                     <input
                       type="number"
                       name="ad_reward_tokens"
@@ -97,7 +99,7 @@ const TokenConfig = () => {
                       required
                     />
                     <small className="text-muted">
-                      Tokens earned after watching an ad
+                      {t("tokenConfig.adRewardDesc")}
                     </small>
                   </div>
 
@@ -107,7 +109,7 @@ const TokenConfig = () => {
                     className="btn btn-primary w-100"
                     disabled={loading}
                   >
-                    {loading ? "Saving..." : "Save Config"}
+                    {loading ? t("tokenConfig.saving") : t("tokenConfig.saveConfig")}
                   </button>
                 </form>
               </div>

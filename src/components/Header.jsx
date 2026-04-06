@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useSidebar } from "../App";
 import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
+import { updateLanguageApi } from "../api/languageApi";
 
 function Header({ title }) {
   const { toggleSidebar } = useSidebar();
@@ -26,9 +27,24 @@ function Header({ title }) {
 
   // ✅ Profile navigation
   const goToProfile = () => {
-    navigate("/dashboard");
+    navigate("/profile");
   };
 
+  const handleLanguageChange = async (lang) => {
+  try {
+    // 1. update UI instantly
+    i18n.changeLanguage(lang);
+
+    // 2. save locally
+    localStorage.setItem("lang", lang);
+
+    // 3. backend update (FORM DATA)
+    await updateLanguageApi(lang);
+
+  } catch (error) {
+    console.error("Language update failed", error);
+  }
+};
   return (
     <header
       style={{
@@ -105,10 +121,7 @@ function Header({ title }) {
                         : "transparent",
                     color: i18n.language === "en" ? "#fff" : "#000",
                   }}
-                  onClick={() => {
-                    i18n.changeLanguage("en");
-                    localStorage.setItem("lang", "en");
-                  }}
+                  onClick={() => handleLanguageChange("en")}
                 >
                   🇬🇧 English
                 </button>
@@ -126,10 +139,7 @@ function Header({ title }) {
                         : "transparent",
                     color: i18n.language === "tr" ? "#fff" : "#000",
                   }}
-                  onClick={() => {
-                    i18n.changeLanguage("tr");
-                    localStorage.setItem("lang", "tr");
-                  }}
+                  onClick={() => handleLanguageChange("tr")}
                 >
                   🇹🇷 Turkish
                 </button>

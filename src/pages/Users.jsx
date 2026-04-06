@@ -7,6 +7,7 @@ import {
 } from "../api/Api";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { BASE_URL_CARD } from "../config/apiConfig";
 
 const Users = () => {
   const [search, setSearch] = useState("");
@@ -19,7 +20,7 @@ const Users = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   // console.log("users", users);
-    const { t } = useTranslation(); 
+  const { t } = useTranslation();
   const navigate = useNavigate();
   /* ================= FETCH USERS ================= */
   // console.log("user",users)
@@ -223,8 +224,12 @@ const Users = () => {
                           <td>
                             <div className="user-cell d-flex align-items-center gap-2">
                               <img
-                                src={`https://python.aitechnotech.in/hocuspocus${user.profile_picture}`}
-                                alt=""
+                                src={
+                                  user?.profile_picture
+                                    ? `${BASE_URL_CARD}${user.profile_picture}`
+                                    : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIn-gE6j6sjvg0ekFgFBIzVP5VdN3aBu9dLg&s"
+                                }
+                                alt="user"
                                 style={{
                                   width: "28px",
                                   height: "28px",

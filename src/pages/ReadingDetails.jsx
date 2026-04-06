@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { getReadingByIdApi } from "../api/Api";
 
 const ReadingDetails = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const [data, setData] = useState(null);
 
@@ -49,19 +51,19 @@ const ReadingDetails = () => {
             <div className="row mb-3">
               <div className="col-md-6">
                 <div className="p-2 bg-light rounded">
-                  <strong>Name:</strong> {data.user_name}
+                  <strong>{t("readingDetails.name")}</strong> {data.user_name}
                 </div>
               </div>
               <div className="col-md-6">
                 <div className="p-2 bg-light rounded">
-                  <strong>Email:</strong> {data.user_email}
+                  <strong>{t("readingDetails.email")}</strong> {data.user_email}
                 </div>
               </div>
             </div>
 
             {/* QUESTION */}
             <div className="alert alert-warning">
-              <strong>Question:</strong>
+              <strong>{t("readingDetails.question")}</strong>
               <p className="mb-0 mt-2">{data.question}</p>
             </div>
 

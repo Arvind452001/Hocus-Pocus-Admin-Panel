@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { deleteReadingsApi, getReadingsApi } from "../api/Api";
 import { useNavigate } from "react-router-dom";
 
 const Readings = () => {
+  const { t } = useTranslation();
   const [readings, setReadings] = useState([]);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
@@ -71,7 +73,7 @@ const Readings = () => {
       setLoading(true);
       const res = await deleteReadingsApi(id);
       fetchReadings();
-      alert('Deleted successffully')
+      alert(t("readings.deletedSuccess"))
 
     } catch (err) {
       console.error(err);
@@ -89,13 +91,13 @@ const Readings = () => {
 
                 {/* 🔍 Search + Filter */}
                 <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                  <h5 className="mb-0">Readings</h5>
+                  <h5 className="mb-0">{t("readings.title")}</h5>
 
                   <div className="d-flex gap-2">
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="Search..."
+                      placeholder={t("readings.search")}
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                     />
@@ -105,9 +107,9 @@ const Readings = () => {
                       value={categoryFilter}
                       onChange={(e) => setCategoryFilter(e.target.value)}
                     >
-                      <option value="All">All</option>
-                      <option value="Tarot Reading">Tarot Reading</option>
-                      <option value="Coffee Reading">Coffee Reading</option>
+                      <option value="All">{t("readings.all")}</option>
+                      <option value="Tarot Reading">{t("readings.tarotReading")}</option>
+                      <option value="Coffee Reading">{t("readings.coffeeReading")}</option>
                     </select>
                   </div>
                 </div>
@@ -117,11 +119,11 @@ const Readings = () => {
                   <table className="table datatable">
                     <thead>
                       <tr>
-                        <th>ID</th>
-                        <th>User Name</th>
-                        <th>Email</th>
-                        <th>Question</th>
-                        <th>Actions</th>
+                        <th>{t("readings.id")}</th>
+                        <th>{t("readings.userName")}</th>
+                        <th>{t("readings.email")}</th>
+                        <th>{t("readings.question")}</th>
+                        <th>{t("readings.actions")}</th>
                       </tr>
                     </thead>
 
@@ -129,7 +131,7 @@ const Readings = () => {
                       {loading ? (
                         <tr>
                           <td colSpan="5" className="text-center">
-                            Loading...
+                            {t("readings.loading")}
                           </td>
                         </tr>
                       ) : filteredData.length > 0 ? (
@@ -159,7 +161,7 @@ const Readings = () => {
                       ) : (
                         <tr>
                           <td colSpan="5" className="text-center">
-                            No data found
+                            {t("readings.noDataFound")}
                           </td>
                         </tr>
                       )}
@@ -174,11 +176,11 @@ const Readings = () => {
                     disabled={page === 1}
                     onClick={() => setPage(page - 1)}
                   >
-                    Previous
+                    {t("readings.previous")}
                   </button>
 
                   <span>
-                    Page {page} of {totalPages}
+                    {t("readings.page")} {page} {t("readings.of")} {totalPages}
                   </span>
 
                   <button
@@ -186,7 +188,7 @@ const Readings = () => {
                     disabled={page === totalPages}
                     onClick={() => setPage(page + 1)}
                   >
-                    Next
+                    {t("readings.next")}
                   </button>
                 </div>
               </div>
@@ -207,7 +209,7 @@ const Readings = () => {
                 <div className="modal-content">
 
                   <div className="modal-header">
-                    <h5 className="modal-title">Reading Details</h5>
+                    <h5 className="modal-title">{t("readings.modalTitle")}</h5>
                     <button
                       type="button"
                       className="btn-close"
@@ -218,34 +220,34 @@ const Readings = () => {
                   <div className="modal-body">
                     <div className="row g-3">
                       <div className="col-md-6">
-                        <strong>ID:</strong> {selectedReading.id}
+                        <strong>{t("readings.id")}</strong> {selectedReading.id}
                       </div>
 
                       <div className="col-md-6">
-                        <strong>User ID:</strong> {selectedReading.userId}
+                        <strong>{t("readings.userId")}</strong> {selectedReading.userId}
                       </div>
 
                       <div className="col-md-6">
-                        <strong>Name:</strong> {selectedReading.name}
+                        <strong>{t("readings.nameLabel")}</strong> {selectedReading.name}
                       </div>
 
                       <div className="col-md-6">
-                        <strong>Email:</strong> {selectedReading.email}
+                        <strong>{t("readings.emailLabel")}</strong> {selectedReading.email}
                       </div>
 
                       <div className="col-md-6">
-                        <strong>Category:</strong> {selectedReading.category}
+                        <strong>{t("readings.categoryLabel")}</strong> {selectedReading.category}
                       </div>
 
                       <div className="col-md-12">
-                        <strong>Question:</strong>
+                        <strong>{t("readings.questionLabel")}</strong>
                         <div className="border p-2 mt-1 rounded bg-light">
                           {selectedReading.question}
                         </div>
                       </div>
 
                       <div className="col-md-6">
-                        <strong>Created At:</strong> {selectedReading.createdAt}
+                        <strong>{t("readings.createdAtLabel")}</strong> {selectedReading.createdAt}
                       </div>
                     </div>
                   </div>
@@ -255,7 +257,7 @@ const Readings = () => {
                       className="btn btn-secondary"
                       onClick={() => setShowModal(false)}
                     >
-                      Close
+                      {t("readings.close")}
                     </button>
                   </div>
 

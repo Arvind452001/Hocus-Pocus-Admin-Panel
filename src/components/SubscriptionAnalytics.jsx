@@ -1,32 +1,35 @@
+import { useTranslation } from "react-i18next";
+
 function SubscriptionAnalytics({ data }) {
+  const { t } = useTranslation();
   const { subscriptions, revenue } = data;
 
   return (
     <div className="card mt-4 mb-4">
       <div className="card-body">
         <h5 style={{ color: "#651d32", fontWeight: 600 }}>
-          Subscription Analytics
+          {t("subscriptionAnalytics.title")}
         </h5>
 
         {/* ===== TOP STATS ===== */}
         <div className="row g-3 mt-3">
           <Stat
-            title="Total Subscriptions"
+            title={t("subscriptionAnalytics.totalSubscriptions")}
             value={subscriptions.total}
             bg="rgb(101, 29, 50)"
           />
           <Stat
-            title="Active"
+            title={t("subscriptionAnalytics.active")}
             value={subscriptions.active}
             bg="rgb(34, 139, 87)"
           />
           <Stat
-            title="Cancelled"
+            title={t("subscriptionAnalytics.cancelled")}
             value={subscriptions.cancelled}
             bg="rgb(178, 34, 34)"
           />
           <Stat
-            title="Total Revenue"
+            title={t("subscriptionAnalytics.totalRevenue")}
             value={`₹ ${revenue.totalRevenue}`}
             bg="rgb(33, 37, 41)"
           />

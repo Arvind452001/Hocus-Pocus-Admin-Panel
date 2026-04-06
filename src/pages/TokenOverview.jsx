@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   cleanupExpiredTokensApi,
   getTokensOverviewApi,
 } from "../api/TokenAPIs";
 
 const TokenOverview = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState(null);
   const [search, setSearch] = useState("");
 
@@ -23,7 +25,7 @@ const TokenOverview = () => {
     }
   };
 
-  if (!data) return <div>Loading...</div>;
+  if (!data) return <div>{t("tokenOverview.loading")}</div>;
 
   const { overview, top_token_holders } = data;
 
@@ -36,7 +38,7 @@ const TokenOverview = () => {
   const handleCleanupExpired = async () => {
     try {
       await cleanupExpiredTokensApi();
-      alert("Expired tokens cleaned");
+      alert(t("tokenOverview.expiredTokensCleaned"));
 
       // refresh data
       fetchData();
@@ -51,21 +53,21 @@ const TokenOverview = () => {
         <div className="row mb-4">
           <div className="col-md-3">
             <div className="card p-3 text-center">
-              <h6>Total Tokens</h6>
+              <h6>{t("tokenOverview.totalTokens")}</h6>
               <h4>{overview.total_tokens_in_circulation}</h4>
             </div>
           </div>
 
           <div className="col-md-3">
             <div className="card p-3 text-center">
-              <h6>Users With Tokens</h6>
+              <h6>{t("tokenOverview.usersWithTokens")}</h6>
               <h4>{overview.users_with_tokens}</h4>
             </div>
           </div>
 
           <div className="col-md-3">
             <div className="card p-3 text-center">
-              <h6>No Tokens</h6>
+              <h6>{t("tokenOverview.noTokens")}</h6>
               <h4>{overview.users_with_no_tokens}</h4>
             </div>
           </div>
@@ -74,7 +76,7 @@ const TokenOverview = () => {
             <div className="card p-3 text-center">
            
               <div className="d-flex justify-content-center align-items-center gap-2 mb-2">
-                <h6 className="mb-0 text-muted">Expired</h6>
+                <h6 className="mb-0 text-muted">{t("tokenOverview.expired")}</h6>
                 <h4 className="mb-0">{overview.expired_token_records}</h4>
               </div>
 
@@ -84,7 +86,7 @@ const TokenOverview = () => {
                 style={{ padding: "2px 6px", fontSize: "12px" }}
                 onClick={handleCleanupExpired}
               >
-                Cleanup expired token
+                {t("tokenOverview.cleanupExpiredTokens")}
               </button>
             </div>
           </div> */}
@@ -96,13 +98,13 @@ const TokenOverview = () => {
             <div className="card-body">
               {/* ===== TITLE + SEARCH (SAME LINE) ===== */}
               <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="mb-0">Top Token Holders</h5>
+                <h5 className="mb-0">{t("tokenOverview.topTokenHolders")}</h5>
 
                 <div style={{ width: "300px" }}>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="Search..."
+                    placeholder={t("tokenOverview.search")}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
@@ -114,10 +116,10 @@ const TokenOverview = () => {
                 <table className="table table-bordered">
                   <thead>
                     <tr>
-                      <th>#</th>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Tokens</th>
+                      <th>{t("tokenOverview.index")}</th>
+                      <th>{t("tokenOverview.name")}</th>
+                      <th>{t("tokenOverview.email")}</th>
+                      <th>{t("tokenOverview.tokens")}</th>
                     </tr>
                   </thead>
 
@@ -138,7 +140,7 @@ const TokenOverview = () => {
                     ) : (
                       <tr>
                         <td colSpan="4" className="text-center">
-                          No data found
+                          {t("tokenOverview.noDataFound")}
                         </td>
                       </tr>
                     )}
