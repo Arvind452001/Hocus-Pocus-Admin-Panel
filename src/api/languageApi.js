@@ -1,9 +1,11 @@
 import axios from "axios";
 import { BASE_URL } from "../config/apiConfig";
 
+
 export const updateLanguageApi = async (lang) => {
+  console.log("api call",lang)
   const token = localStorage.getItem("token");
-console.log("Updating language to:", lang);
+
   const formData = new URLSearchParams();
   formData.append("language", lang);
 
@@ -14,12 +16,9 @@ console.log("Updating language to:", lang);
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/x-www-form-urlencoded",
-        accept: "application/json",
+        Accept: "application/json",
+        "Accept-Language": lang, // ✅ ADD THIS
       },
     }
   );
 };
-
-
-
-         

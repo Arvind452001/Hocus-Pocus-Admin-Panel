@@ -11,7 +11,8 @@
     "user": "User",
     "email": "Email",
     "totalReading": "Total Readings",
-    "fromLastMonth": "from last month"
+    "fromLastMonth": "from last month",
+    "readings": "Readings"
   },
 
   "users": {
@@ -43,7 +44,9 @@
     "readings": "Readings",
     "tarotCards": "Tarot Cards",
     "katinaCards": "Katina Cards",
-    "dreams": "Dreams"
+    "dreams": "Dreams",
+    "broadcastNotification": "Broadcast Notification",
+    "ContactMessages": "Contact Messages"
   },
 
   "categories": {
@@ -159,7 +162,6 @@
     "operationFailed": "Operation failed"
   },
 
-  
   "aiPrompts": {
     "title": "AI Prompt Management",
     "createPrompt": "Create Prompt",
@@ -426,6 +428,45 @@
     "incomplete": "Incomplete",
 
     "uploadImage": "Upload Image"
-  }
+  },
 
+  "notification": {
+    "headingBroadcast": "Send Broadcast Notification",
+    "headingSingle": "Send Notification to User",
+    "headingMultiple": "Send to {{count}} selected users",
+
+    "title": "Title",
+    "body": "Body",
+    "titleTranslated": "Translated Title",
+    "bodyTranslated": "Translated Body",
+
+    "selectType": "Select Type",
+    "typeInfo": "Info",
+    "typeAlert": "Alert",
+    "typePromo": "Promo",
+
+    "saveToDb": "Save to DB",
+    "onlyWithTokens": "Only Users with Tokens",
+
+    "sendUser": "Send to User",
+    "sendBroadcast": "Send Broadcast",
+
+    "successMultiple": "Notification sent to selected users",
+    "successSingle": "Notification sent to user",
+    "successBroadcast": "Broadcast notification sent",
+    "error": "Error sending notification",
+    "invalidJson": "Invalid JSON in extra data",
+    "extraData": "Extra Data (JSON)",
+    "extraDataExample": "e.g. {\"screen\":\"home\"}"
+  },
+
+  "common": {
+    "show": "Show",
+    "entries": "entries",
+    "view": "View",
+    "noData": "No data found",
+    "prev": "Previous",
+    "next": "Next",
+    "close": "Close"
+  }
 }

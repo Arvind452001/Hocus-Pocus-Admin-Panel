@@ -29,6 +29,12 @@ const KatinaCards = () => {
   const [mode, setMode] = useState("add");
   const [selected, setSelected] = useState(null);
 
+  const currentLang = localStorage.getItem("lang") || "en";
+  const getLocalizedField = (obj, field) => {
+  return currentLang === "tr"
+    ? obj[`${field}_tr`] || obj[field]
+    : obj[field];
+};
   let navigate = useNavigate();
   // 🔥 Dummy fallback
   const dummyData = [
@@ -162,6 +168,7 @@ const KatinaCards = () => {
         await createCardApi(formData);
       } else if (mode === "edit") {
         await updateCardApi(selected.id, formData);
+        alert(t("cards.updateSuccess"));
       }
 
       setShowModal(false);
@@ -268,127 +275,124 @@ const KatinaCards = () => {
 
               <tbody>
                 {cards.map((card) => (
-                  <tr key={card.id}>
-                    {/* IMAGE */}
-                    <td style={{ verticalAlign: "middle" }}>
-                      <img
-                        src={
-                          card?.image
-                            ? `${BASE_URL_CARD}/${card.image}`
-                            : getRandomImage()
-                        }
-                        alt={card.name}
-                        onError={(e) => {
-                          e.currentTarget.src = getRandomImage(); // fallback if broken
-                        }}
-                        style={{
-                          width: "40px",
-                          height: "60px",
-                          borderRadius: "6px",
-                          objectFit: "cover",
-                        }}
-                      />
-                    </td>
+                <tr key={card.id}>
+  {/* IMAGE */}
+  <td style={{ verticalAlign: "middle" }}>
+    <img
+      src={
+        card?.image
+          ? `${BASE_URL_CARD}/${card.image}`
+          : getRandomImage()
+      }
+      alt={getLocalizedField(card, "name")}
+      onError={(e) => {
+        e.currentTarget.src = getRandomImage();
+      }}
+      style={{
+        width: "40px",
+        height: "60px",
+        borderRadius: "6px",
+        objectFit: "cover",
+      }}
+    />
+  </td>
 
-                    {/* NO */}
-                    <td style={{ verticalAlign: "middle" }}>{card.id}</td>
+  {/* NO */}
+  <td style={{ verticalAlign: "middle" }}>{card.id}</td>
 
-                    {/* NAME */}
-                    <td style={{ verticalAlign: "middle" }}>
-                      <div
-                        className="fw-bold"
-                        style={{
-                          maxWidth: "180px",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                        title={card.name}
-                      >
-                        {card.name}
-                      </div>
+  {/* NAME */}
+  <td style={{ verticalAlign: "middle" }}>
+    <div
+      className="fw-bold"
+      style={{
+        maxWidth: "180px",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      }}
+      title={getLocalizedField(card, "name")}
+    >
+      {getLocalizedField(card, "name")}
+    </div>
 
-                      <small
-                        className="text-muted"
-                        style={{
-                          display: "block",
-                          maxWidth: "180px",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                        title={card.keywords}
-                      >
-                        {card.keywords}
-                      </small>
-                    </td>
+    <small
+      className="text-muted"
+      style={{
+        display: "block",
+        maxWidth: "180px",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      }}
+      title={getLocalizedField(card, "keywords")}
+    >
+      {getLocalizedField(card, "keywords")}
+    </small>
+  </td>
 
-                    {/* MEANING */}
-                    <td
-                      style={{
-                        verticalAlign: "middle",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {card.meaning}
-                    </td>
+  {/* MEANING */}
+  <td
+    style={{
+      verticalAlign: "middle",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    }}
+  >
+    {getLocalizedField(card, "meaning")}
+  </td>
 
-                    {/* STATUS */}
-                    <td style={{ verticalAlign: "middle" }}>
-                      {card.is_active ? (
-                        <span className="badge bg-success">
-                          {t("cards.active")}
-                        </span>
-                      ) : (
-                        <span className="badge bg-secondary">
-                          {t("cards.inactive")}
-                        </span>
-                      )}
-                    </td>
+  {/* STATUS */}
+  <td style={{ verticalAlign: "middle" }}>
+    {card.is_active ? (
+      <span className="badge bg-success">
+        {t("cards.active")}
+      </span>
+    ) : (
+      <span className="badge bg-secondary">
+        {t("cards.inactive")}
+      </span>
+    )}
+  </td>
 
-                    {/* ACTION */}
-                    <td
-                      className="text-end"
-                      style={{ verticalAlign: "middle", whiteSpace: "nowrap" }}
-                    >
-                      {/* View */}
-                      <button
-                        className="btn btn-sm me-2"
-                        style={{
-                          backgroundColor: "#e3f2fd",
-                          color: "#0d6efd",
-                        }}
-                        onClick={() => openModal("view", card)}
-                      >
-                        <i className="bi bi-eye"></i>
-                      </button>
+  {/* ACTION */}
+  <td
+    className="text-end"
+    style={{ verticalAlign: "middle", whiteSpace: "nowrap" }}
+  >
+    <button
+      className="btn btn-sm me-2"
+      style={{
+        backgroundColor: "#e3f2fd",
+        color: "#0d6efd",
+      }}
+      onClick={() => openModal("view", card)}
+    >
+      <i className="bi bi-eye"></i>
+    </button>
 
-                      {/* Edit */}
-                      <button
-                        className="btn btn-sm me-2"
-                        style={{
-                          backgroundColor: "#fff3cd",
-                          color: "#ffc107",
-                        }}
-                        onClick={() => openModal("edit", card)}
-                      >
-                        <i className="bi bi-pencil-square"></i>
-                      </button>
+    <button
+      className="btn btn-sm me-2"
+      style={{
+        backgroundColor: "#fff3cd",
+        color: "#ffc107",
+      }}
+      onClick={() => openModal("edit", card)}
+    >
+      <i className="bi bi-pencil-square"></i>
+    </button>
 
-                      {/* Delete */}
-                      <button
-                        className="btn btn-sm"
-                        style={{
-                          backgroundColor: "#f8d7da",
-                          color: "#dc3545",
-                        }}
-                        onClick={() => handleDelete(card.id)}
-                      >
-                        <i className="bi bi-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
+    <button
+      className="btn btn-sm"
+      style={{
+        backgroundColor: "#f8d7da",
+        color: "#dc3545",
+      }}
+      onClick={() => handleDelete(card.id)}
+    >
+      <i className="bi bi-trash"></i>
+    </button>
+  </td>
+</tr>
                 ))}
               </tbody>
             </table>

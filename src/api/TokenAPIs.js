@@ -52,9 +52,15 @@ export const cleanupExpiredTokensApi = () => {
 //////////////////////////////////////////////////////////////////////////
 
 // ✅ Get Token Packages
-export const getTokenPackagesApi = () => {
-  return axiosJSONData.get(`/admin/token-packages`)
-}
+export const getTokenPackagesApi = (params = {}) => {
+  return axiosJSONData.get("/admin/token-packages", {
+    params: {
+      include_inactive: false,
+      lang: "en",
+      ...params, // 👈 optional override
+    },
+  });
+};
 
 
 export const createTokenPackageApi = (data) => {

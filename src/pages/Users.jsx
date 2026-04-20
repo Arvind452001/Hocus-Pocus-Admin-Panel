@@ -8,6 +8,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { BASE_URL_CARD } from "../config/apiConfig";
+import { sendToLessThan10, sendToUser } from "../api/notificationsApi";
 
 const Users = () => {
   const [search, setSearch] = useState("");
@@ -15,7 +16,7 @@ const Users = () => {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-
+  const [selectedUsers, setSelectedUsers] = useState([]);
   // ✅ NEW STATES
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -98,8 +99,39 @@ const Users = () => {
       console.error("Delete failed", error);
     }
   };
-  /* ================= FILTER USERS ================= */
 
+  const handleBellClick = async () => {
+    try {
+      // ✅ CASE 1: No user selected
+      if (selectedUsers.length === 0) {
+        const confirmSend = window.confirm(
+          "Are you sure you want to send notification to users with less than 10 tokens?",
+        );
+
+        // ❌ If user cancels → stop
+        if (!confirmSend) return;
+
+        const payload = {
+          title: "token is less than 10",
+          body: "Triggered from Admin 🔔",
+        };
+
+        await sendToLessThan10(payload);
+
+        alert("Notification sent to users with less than 10 tokens ✅");
+        return;
+      }
+
+      // ✅ CASE 2: Selected users → navigate
+      navigate("/broadcast-notification", {
+        state: { userIds: selectedUsers },
+      });
+    } catch (err) {
+      console.error(err);
+      alert("Failed ❌");
+    }
+  };
+  /* ================= FILTER USERS ================= */
   const filteredUsers = users.filter((user) => {
     const searchMatch =
       user.full_name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -113,6 +145,13 @@ const Users = () => {
     return searchMatch && statusMatch;
   });
   console.log("filteredUsers", filteredUsers);
+
+  /* ================= SELECTED USERS ================= */
+  const handleSelectUser = (id) => {
+    setSelectedUsers((prev) =>
+      prev.includes(id) ? prev.filter((uid) => uid !== id) : [...prev, id],
+    );
+  };
   return (
     <div className="">
       <main className="container-fluid mr-4">
@@ -159,14 +198,27 @@ const Users = () => {
                       </option>
                     ))}
                   </select>
-
-                  <a
+                  <button
+                    onClick={handleBellClick}
+                    className="btn btn-sm"
+                    style={{ backgroundColor: "#bd00da", color: "#fff", marginRight:"10px"}}
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title={
+                      selectedUsers.length === 0
+                        ? "Send notification to users with less than 10 tokens"
+                        : "Send notification to selected users"
+                    }
+                  >
+                    <i className="bi bi-bell-fill"></i>
+                  </button>
+                  {/* <a
                     href="/add-user"
                     className="btn"
                     style={{ backgroundColor: "#bd00da", color: "#fff" }}
                   >
                     {t("users.addUser")}
-                  </a>
+                  </a> */}
                 </div>
               </div>
 
@@ -176,6 +228,18 @@ const Users = () => {
                 <table className="table datatable">
                   <thead>
                     <tr>
+                      <th>
+                        <input
+                          type="checkbox"
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedUsers(filteredUsers.map((u) => u.id));
+                            } else {
+                              setSelectedUsers([]);
+                            }
+                          }}
+                        />
+                      </th>
                       <th>{t("users.user")}</th>
                       <th>{t("users.email")}</th>
                       <th>{t("users.tokens")}</th>
@@ -221,6 +285,13 @@ const Users = () => {
                       !error &&
                       filteredUsers.map((user) => (
                         <tr key={user.id}>
+                          <td>
+                            <input
+                              type="checkbox"
+                              checked={selectedUsers.includes(user.id)}
+                              onChange={() => handleSelectUser(user.id)}
+                            />
+                          </td>
                           <td>
                             <div className="user-cell d-flex align-items-center gap-2">
                               <img

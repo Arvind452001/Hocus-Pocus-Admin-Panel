@@ -63,10 +63,10 @@ function Sidebar() {
         </NavLink>
 
         {/* AI Prompt */}
-        <NavLink to="/ai-prompt" className="nav-link d-flex align-items-center">
+        {/* <NavLink to="/ai-prompt" className="nav-link d-flex align-items-center">
           <i className="bi bi-chat-left-text"></i>
           <span className="nav-text">{t("sideBar.aiPrompt")}</span>
-        </NavLink>
+        </NavLink> */}
 
         {/* TOKEN DROPDOWN */}
         <div className="nav-item">
@@ -159,9 +159,19 @@ function Sidebar() {
           <i className="bi bi-moon-stars me-2"></i>
           <span className="nav-text">{t("sideBar.dreams")}</span>
         </NavLink>
+
+         <NavLink to="/broadcast-notification" className="nav-link d-flex align-items-center">
+          <i className="bi bi-bell me-2"></i>
+          <span className="nav-text">{t("sideBar.broadcastNotification")}</span>
+        </NavLink>
+
+         <NavLink to="/Contact-Messages" className="nav-link d-flex align-items-center">
+          <i className="bi bi-person-lines-fill me-2"></i>
+          <span className="nav-text">{t("sideBar.ContactMessages")}</span>
+        </NavLink>
       </nav>
     </aside>
   );
 }
 
-export default Sidebar;
+export default Sidebar; 

@@ -11,7 +11,8 @@
     "user": "Kullanıcı",
     "email": "E-posta",
     "totalReading": "Toplam Okuma",
-    "fromLastMonth": "geçen aydan"
+    "fromLastMonth": "geçen aydan",
+    "readings": "Yorumlar"
   },
   "users": {
     "users": "Kullanıcılar",
@@ -42,7 +43,9 @@
     "readings": "Okumalar",
     "tarotCards": "Tarot Kartları",
     "katinaCards": "Katina Kartları",
-    "dreams": "Rüyalar"
+    "dreams": "Rüyalar",
+    "broadcastNotification": "Yayın Bildirimi",
+    "ContactMessages": "İletişim Mesajları"
   },
 
   "categories": {
@@ -419,6 +422,45 @@
     "incomplete": "Eksik",
 
     "uploadImage": "Resim Yükle"
-  }
+  },
 
+  "notification": {
+    "headingBroadcast": "Toplu Bildirim Gönder",
+    "headingSingle": "Kullanıcıya Bildirim Gönder",
+    "headingMultiple": "{{count}} kullanıcıya gönder",
+
+    "title": "Başlık",
+    "body": "Mesaj",
+    "titleTranslated": "Çevrilmiş Başlık",
+    "bodyTranslated": "Çevrilmiş Mesaj",
+
+    "selectType": "Tip Seç",
+    "typeInfo": "Bilgi",
+    "typeAlert": "Uyarı",
+    "typePromo": "Promo",
+
+    "saveToDb": "Veritabanına Kaydet",
+    "onlyWithTokens": "Sadece Tokenı Olanlar",
+
+    "sendUser": "Kullanıcıya Gönder",
+    "sendBroadcast": "Toplu Gönder",
+
+    "successMultiple": "Seçili kullanıcılara gönderildi",
+    "successSingle": "Kullanıcıya gönderildi",
+    "successBroadcast": "Toplu bildirim gönderildi",
+    "error": "Gönderim hatası",
+    "invalidJson": "Geçersiz JSON",
+    "extraData": "Ek Veri (JSON)",
+    "extraDataExample": "örnek: {\"screen\":\"home\"}"
+  },
+  
+   "common": {
+    "show": "Göster",
+    "entries": "kayıt",
+    "view": "Görüntüle",
+    "noData": "Veri bulunamadı",
+    "prev": "Önceki",
+    "next": "Sonraki",
+    "close": "Kapat"
+  }
 }

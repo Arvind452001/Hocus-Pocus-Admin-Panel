@@ -23,6 +23,7 @@ function Dashboard() {
 
    const { t } = useTranslation(); 
   /* ================= FETCH DASHBOARD ANALYTICS ================= */
+const lang = localStorage.getItem("lang") || "en";
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -63,43 +64,33 @@ function Dashboard() {
     };
 
     fetchDashboardData();
-  }, []);
+  }, [lang]);
 
   /* ================= BAR CHART ================= */
 
-  useEffect(() => {
-    if (typeof Chart === "undefined") return;
-    if (!barChartRef.current) return;
+useEffect(() => {
+  if (typeof Chart === "undefined") return;
+  if (!barChartRef.current) return;
 
-    if (barChartRef.current.chart) {
-      barChartRef.current.chart.destroy();
-    }
+  if (barChartRef.current.chart) {
+    barChartRef.current.chart.destroy();
+  }
 
-    barChartRef.current.chart = new Chart(barChartRef.current, {
-      type: "bar",
-
-      data: {
-        labels: readingsLast30Days.map((i) => i.date),
-        datasets: [
-          {
-            label: "Readings",
-            data: readingsLast30Days.map((i) => i.count),
-            backgroundColor: "#bd00da",
-            borderRadius: 8,
-          },
-        ],
-      },
-
-      options: {
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
+  barChartRef.current.chart = new Chart(barChartRef.current, {
+    type: "bar",
+    data: {
+      labels: readingsLast30Days.map((i) => i.date),
+      datasets: [
+        {
+          label: t("dashboard.readings"), // ✅ dynamic
+          data: readingsLast30Days.map((i) => i.count),
+          backgroundColor: "#bd00da",
+          borderRadius: 8,
         },
-      },
-    });
-  }, [readingsLast30Days]);
+      ],
+    },
+  });
+}, [readingsLast30Days, t]); // ✅ ADD t here
 
   /* ================= DONUT CHART ================= */
 

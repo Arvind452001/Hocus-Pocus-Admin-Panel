@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { getUserDetailsApi, makeAdminApi, removeAdminApi } from "../api/Api";
 import {
@@ -17,6 +17,8 @@ const UserDetails = () => {
   const [amount, setAmount] = useState(1);
   const [days, setDays] = useState(1);
 
+  const navigate = useNavigate();
+  
    const { t } = useTranslation(); 
   useEffect(() => {
     fetchUser();
@@ -115,48 +117,78 @@ const UserDetails = () => {
     }
   };
 
+  const handleNotificationClick = () => {
+    navigate(`/broadcast-notification/${id}`); // 👈 send user id in params
+  };
   return (
     <main className="container-fluid mr-4">
       {/* ================= PROFILE HEADER ================= */}
 
-      <div className="card mb-3">
-        <div className="card-body d-flex align-items-center gap-3">
-          <img
-            src={
-              profile?.profile_picture
-                ? `https://python.aitechnotech.in/hocuspocus${profile.profile_picture}`
-                : "https://i.pravatar.cc/70"
-            }
-            alt="user"
-            style={{
-              width: "70px",
-              height: "70px",
-              borderRadius: "50%",
-              objectFit: "cover",
-            }}
-          />
+     <div className="card mb-3 position-relative">
+      
+      {/* 🔔 Notification Button (Top Right) */}
+   <button
+  onClick={handleNotificationClick}
+  className="btn position-absolute d-flex align-items-center gap-2"
+  style={{
+    top: "10px",
+    right: "10px",
+    backgroundColor: "#bd00da",
+    color: "#fff",
+    fontSize: "12px",
+  }}
+>
+  <i className="bi bi-bell"></i>
+  Send Notification
+</button>
 
-          <div>
-            <h5 className="mb-1">{user.full_name}</h5>
+      <div className="card-body d-flex align-items-center gap-3">
+        <img
+          src={
+            profile?.profile_picture
+              ? `https://python.aitechnotech.in/hocuspocus${profile.profile_picture}`
+              : "https://i.pravatar.cc/70"
+          }
+          alt="user"
+          style={{
+            width: "70px",
+            height: "70px",
+            borderRadius: "50%",
+            objectFit: "cover",
+          }}
+        />
 
-            <div className="text-muted">{user.email}</div>
+        <div>
+          <h5 className="mb-1">{user.full_name}</h5>
 
-            <div className="mt-1">
-              {user.is_verified && (
-                <span className="badge bg-success me-2">{t("userDetails.verified")}</span>
-              )}
+          <div className="text-muted">{user.email}</div>
 
-              {user.is_active ? (
-                <span className="badge bg-primary me-2">{t("userDetails.active")}</span>
-              ) : (
-                <span className="badge bg-danger">{t("userDetails.inactive")}</span>
-              )}
+          <div className="mt-1">
+            {user.is_verified && (
+              <span className="badge bg-success me-2">
+                {t("userDetails.verified")}
+              </span>
+            )}
 
-              {user.is_admin && <span className="badge bg-dark">{t("userDetails.admin")}</span>}
-            </div>
+            {user.is_active ? (
+              <span className="badge bg-primary me-2">
+                {t("userDetails.active")}
+              </span>
+            ) : (
+              <span className="badge bg-danger">
+                {t("userDetails.inactive")}
+              </span>
+            )}
+
+            {user.is_admin && (
+              <span className="badge bg-dark">
+                {t("userDetails.admin")}
+              </span>
+            )}
           </div>
         </div>
       </div>
+    </div>
 
       {/* ================= ROLE & PERMISSIONS ================= */}
 

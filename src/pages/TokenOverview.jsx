@@ -7,150 +7,175 @@ import {
 
 const TokenOverview = () => {
   const { t } = useTranslation();
-  const [data, setData] = useState(null);
   const [search, setSearch] = useState("");
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [cleaning, setCleaning] = useState(false);
 
-  ///////==========================///////
   useEffect(() => {
     fetchData();
   }, []);
 
-  ///////==========================///////
   const fetchData = async () => {
     try {
+      setLoading(true);
+      setError(false);
       const res = await getTokensOverviewApi();
-      setData(res.data);
+      if (res?.data) {
+        setData(res.data);
+      } else {
+        setData(null);
+      }
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      setError(true);
+      setData(null);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!data) return <div>{t("tokenOverview.loading")}</div>;
-
-  const { overview, top_token_holders } = data;
-
-  const filteredUsers = top_token_holders.filter(
-    (user) =>
-      user.full_name.toLowerCase().includes(search.toLowerCase()) ||
-      user.email.toLowerCase().includes(search.toLowerCase()),
-  );
-  ///////==========================///////
   const handleCleanupExpired = async () => {
     try {
+      setCleaning(true);
       await cleanupExpiredTokensApi();
       alert(t("tokenOverview.expiredTokensCleaned"));
-
-      // refresh data
-      fetchData();
+      await fetchData();
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      alert(t("tokenOverview.cleanupFailed") || "Cleanup failed");
+    } finally {
+      setCleaning(false);
     }
   };
+
+  const overview = data?.overview || {
+    total_tokens_in_circulation: 0,
+    users_with_tokens: 0,
+    users_with_no_tokens: 0,
+    expired_token_records: 0,
+  };
+  const topTokenHolders = data?.top_token_holders || [];
+
+  const filteredUsers = topTokenHolders.filter(
+    (user) =>
+      user.full_name?.toLowerCase().includes(search.toLowerCase()) ||
+      user.email?.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className="">
-      <main className="container-fluid mt-4">
-        {/* ===== OVERVIEW CARDS ===== */}
-        <div className="row mb-4">
-          <div className="col-md-3">
-            <div className="card p-3 text-center">
-              <h6>{t("tokenOverview.totalTokens")}</h6>
-              <h4>{overview.total_tokens_in_circulation}</h4>
-            </div>
+    <div className="container-fluid mt-4">
+      {/* ===== CARDS – always visible, numbers ya dash ===== */}
+      <div className="row mb-4 g-3">
+        <div className="col-md-3">
+          <div className="card p-3 text-center shadow-sm">
+            <h6 className="text-muted">{t("tokenOverview.totalTokens")}</h6>
+            <h4>{error ? "—" : overview.total_tokens_in_circulation}</h4>
           </div>
-
-          <div className="col-md-3">
-            <div className="card p-3 text-center">
-              <h6>{t("tokenOverview.usersWithTokens")}</h6>
-              <h4>{overview.users_with_tokens}</h4>
-            </div>
+        </div>
+        <div className="col-md-3">
+          <div className="card p-3 text-center shadow-sm">
+            <h6 className="text-muted">{t("tokenOverview.usersWithTokens")}</h6>
+            <h4>{error ? "—" : overview.users_with_tokens}</h4>
           </div>
-
-          <div className="col-md-3">
-            <div className="card p-3 text-center">
-              <h6>{t("tokenOverview.noTokens")}</h6>
-              <h4>{overview.users_with_no_tokens}</h4>
-            </div>
+        </div>
+        <div className="col-md-3">
+          <div className="card p-3 text-center shadow-sm">
+            <h6 className="text-muted">{t("tokenOverview.noTokens")}</h6>
+            <h4>{error ? "—" : overview.users_with_no_tokens}</h4>
           </div>
-
-          {/* <div className="col-md-3">
-            <div className="card p-3 text-center">
-           
-              <div className="d-flex justify-content-center align-items-center gap-2 mb-2">
-                <h6 className="mb-0 text-muted">{t("tokenOverview.expired")}</h6>
-                <h4 className="mb-0">{overview.expired_token_records}</h4>
-              </div>
-
-           
+        </div>
+        <div className="col-md-3">
+          <div className="card p-3 text-center shadow-sm">
+            <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <h6 className="text-muted mb-0">{t("tokenOverview.expired")}</h6>
+              <h4 className="mb-0">{error ? "—" : overview.expired_token_records}</h4>
               <button
-                className="btn btn-outline-danger"
-                style={{ padding: "2px 6px", fontSize: "12px" }}
+                className="btn btn-sm btn-outline-danger"
                 onClick={handleCleanupExpired}
+                disabled={cleaning || loading}
               >
-                {t("tokenOverview.cleanupExpiredTokens")}
+                {cleaning
+                  ? t("tokenOverview.cleaning") || "Cleaning..."
+                  : t("tokenOverview.cleanupExpiredTokens")}
               </button>
             </div>
-          </div> */}
-        </div>
-
-        {/* ===== TABLE ===== */}
-        <div className="card">
-          <div className="card">
-            <div className="card-body">
-              {/* ===== TITLE + SEARCH (SAME LINE) ===== */}
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="mb-0">{t("tokenOverview.topTokenHolders")}</h5>
-
-                <div style={{ width: "300px" }}>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder={t("tokenOverview.search")}
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              {/* ===== TABLE ===== */}
-              <div className="table-responsive">
-                <table className="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>{t("tokenOverview.index")}</th>
-                      <th>{t("tokenOverview.name")}</th>
-                      <th>{t("tokenOverview.email")}</th>
-                      <th>{t("tokenOverview.tokens")}</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {filteredUsers.length > 0 ? (
-                      filteredUsers.map((user, index) => (
-                        <tr key={user.user_id}>
-                          <td>{index + 1}</td>
-                          <td>{user.full_name}</td>
-                          <td>{user.email}</td>
-                          <td>
-                            <span className="badge bg-primary">
-                              {user.tokens}
-                            </span>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="4" className="text-center">
-                          {t("tokenOverview.noDataFound")}
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
           </div>
         </div>
-      </main>
+      </div>
+
+      {/* ===== TABLE SECTION – headers always visible ===== */}
+      <div className="card shadow-sm">
+        <div className="card-body">
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+            <h5 className="mb-0">{t("tokenOverview.topTokenHolders")}</h5>
+            <div style={{ width: "300px" }}>
+              <input
+                type="text"
+                className="form-control"
+                placeholder={t("tokenOverview.search")}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          <div className="table-responsive">
+            <table className="table table-bordered table-hover align-middle">
+              <thead className="table-light">
+                <tr>
+                  <th>#</th>
+                  <th>{t("tokenOverview.name")}</th>
+                  <th>{t("tokenOverview.email")}</th>
+                  <th>{t("tokenOverview.tokens")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan="4" className="text-center py-4">
+                      <div className="spinner-border spinner-border-sm text-primary me-2" />
+                      {t("tokenOverview.loading")}
+                    </td>
+                  </tr>
+                ) : error ? (
+                  <tr>
+                    <td colSpan="4" className="text-center text-danger py-4">
+                      {t("tokenOverview.errorLoading") || "Failed to load data"}
+                      <button className="btn btn-sm btn-link ms-2" onClick={fetchData}>
+                        {t("tokenOverview.retry") || "Retry"}
+                      </button>
+                    </td>
+                  </tr>
+                ) : filteredUsers.length === 0 ? (
+                  <tr>
+                    <td colSpan="4" className="text-center text-muted py-4">
+                      {search
+                        ? t("tokenOverview.noSearchResults") || "No users match your search."
+                        : t("tokenOverview.noDataFound")}
+                    </td>
+                  </tr>
+                ) : (
+                  filteredUsers.map((user, index) => (
+                    <tr key={user.user_id}>
+                      <td>{index + 1}</td>
+                      <td>{user.full_name || "—"}</td>
+                      <td>{user.email || "—"}</td>
+                      <td>
+                        <span className="badge bg-primary fs-6 px-3 py-2">
+                          {user.tokens ?? 0}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

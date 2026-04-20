@@ -27,6 +27,8 @@ import CreateCard from "./pages/CreateCard";
 import KatinaCards from "./pages/KatinaCards";
 import ReadingDetails from "./pages/ReadingDetails";
 import ProfilePage from "./pages/ProfilePage";
+import BroadcastNotification from "./pages/BroadcastNotification";
+import ContactMessages from "./pages/ContactMessages";
 
 // Sidebar Context
 export const SidebarContext = createContext();
@@ -94,6 +96,9 @@ function App() {
           <Route path="/createCard" element={<CreateCard />} />
           <Route path="/TarotCards" element={<TarotCards />} />
           <Route path="/katinaCards" element={<KatinaCards />} />
+          <Route path="/broadcast-notification" element={<BroadcastNotification />} />
+          <Route path="/broadcast-notification/:id" element={<BroadcastNotification />} />
+          <Route path="/Contact-Messages" element={<ContactMessages />} />
         </Route>
 
         {/* ✅ Default Redirect */}

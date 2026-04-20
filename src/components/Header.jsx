@@ -144,6 +144,24 @@ function Header({ title }) {
                   🇹🇷 Turkish
                 </button>
               </li>
+
+              {/* Hindi */}
+                <li>
+                <button
+                  className="dropdown-item"
+                  style={{
+                    borderRadius: "6px",
+                    background:
+                      i18n.language === "hi"
+                        ? "rgb(189, 0, 218)"
+                        : "transparent",
+                    color: i18n.language === "hi" ? "#fff" : "#000",
+                  }}
+                  onClick={() => handleLanguageChange("hi")}
+                >
+                 Hindi
+                </button>
+              </li>
             </ul>
           </div>
 

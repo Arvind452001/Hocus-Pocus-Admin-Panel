@@ -10,6 +10,8 @@ const Categories = () => {
   const [loading, setLoading] = useState(true);
 
   /* ================= FETCH CATEGORIES ================= */
+  const currentLang = localStorage.getItem("lang") || "en";
+
   const { t } = useTranslation();
   useEffect(() => {
     fetchCategories();
@@ -46,7 +48,12 @@ const Categories = () => {
   /* ================= FILTER + LIMIT ================= */
 
   const filteredData = categories
-    .filter((cat) => cat.name.toLowerCase().includes(search.toLowerCase()))
+    .filter((cat) => {
+  const name =
+    currentLang === "tr" ? cat.name_tr : cat.name;
+
+  return name.toLowerCase().includes(search.toLowerCase());
+})
     .slice(0, entries);
 
   return (
@@ -134,9 +141,13 @@ const Categories = () => {
                     <tr key={cat.id}>
   <td>{cat.id}</td>
 
-  <td>{cat.name}</td>
+  <td>
+  {currentLang === "tr" ? cat.name_tr : cat.name}
+</td>
 
-  <td>{cat.subtitle}</td>
+ <td>
+  {currentLang === "tr" ? cat.subtitle_tr : cat.subtitle}
+</td>
 
   <td>
     <span className="badge bg-primary">

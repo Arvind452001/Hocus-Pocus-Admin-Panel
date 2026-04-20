@@ -3,7 +3,12 @@ import { useTranslation } from "react-i18next";
 
 import CardModal from "../components/CardModal";
 import { getCategoriesApi } from "../api/Api";
-import { createCardApi, getTarotCardsApi, updateCardApi } from "../api/CardsAPI";
+import {
+  createCardApi,
+  getTarotCardsApi,
+  updateCardApi,
+  updateTarotCardApi,
+} from "../api/CardsAPI";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL, BASE_URL_CARD } from "../config/apiConfig";
 
@@ -26,6 +31,12 @@ const TarotCards = () => {
   const [selected, setSelected] = useState(null);
 
   let navigate = useNavigate();
+
+  const currentLang = localStorage.getItem("lang") || "en";
+  const getLocalizedField = (obj, field) => {
+    return currentLang === "tr" ? obj[`${field}_tr`] || obj[field] : obj[field];
+  };
+console.log("Current Lang:", currentLang);
   // 🔥 Dummy fallback
   const dummyData = [
     {
@@ -38,16 +49,16 @@ const TarotCards = () => {
     },
   ];
 
-    const DEFAULT_IMAGES = [
-  "https://picsum.photos/40/60?random=1",
-  "https://picsum.photos/40/60?random=2",
-  "https://picsum.photos/40/60?random=3",
-  "https://picsum.photos/40/60?random=4",
-];
-const getRandomImage = () => {
-  return DEFAULT_IMAGES[Math.floor(Math.random() * DEFAULT_IMAGES.length)];
-};
-const fallbackImage = useMemo(() => getRandomImage(), []);
+  const DEFAULT_IMAGES = [
+    "https://picsum.photos/40/60?random=1",
+    "https://picsum.photos/40/60?random=2",
+    "https://picsum.photos/40/60?random=3",
+    "https://picsum.photos/40/60?random=4",
+  ];
+  const getRandomImage = () => {
+    return DEFAULT_IMAGES[Math.floor(Math.random() * DEFAULT_IMAGES.length)];
+  };
+  const fallbackImage = useMemo(() => getRandomImage(), []);
   // ✅ Initial Load
   useEffect(() => {
     fetchCategories();
@@ -157,7 +168,8 @@ const fallbackImage = useMemo(() => getRandomImage(), []);
       if (mode === "add") {
         await createCardApi(formData);
       } else if (mode === "edit") {
-        await updateCardApi(selected.id, formData);
+        await updateTarotCardApi(selected.id, formData);
+        alert(t("cards.updateSuccess"));
       }
 
       setShowModal(false);
@@ -253,7 +265,7 @@ const fallbackImage = useMemo(() => getRandomImage(), []);
                   <th>{t("cards.name")}</th>
                   <th>{t("cards.arcana")}</th>
                   <th>{t("cards.suit")}</th>
-                  <th>{t("cards.element")}</th>
+                  {/* <th>{t("cards.element")}</th> */}
                   <th className="text-end">{t("cards.action")}</th>
                 </tr>
               </thead>
@@ -267,89 +279,77 @@ const fallbackImage = useMemo(() => getRandomImage(), []);
                   </tr>
                 ) : (
                   cards.map((card) => (
-                    <tr key={card.id}>
-                      {/* IMAGE */}
-                      <td>
-                       <img
-  src={
-    card?.image_file
-      ? `${BASE_URL_CARD}/tarot-images/${card.image_file}`
-      : getRandomImage()
-  }
-  alt={card?.name || "card"}
-  onError={(e) => {
-    e.currentTarget.src = fallbackImage;
-  }}
-  style={{
-    width: "40px",
-    height: "60px",
-    borderRadius: "6px",
-    objectFit: "cover",
-  }}
-/>
-                      </td>
+                   <tr key={card.id}>
+  {/* IMAGE */}
+  <td>
+    <img
+      src={
+        card?.image_file
+          ? `${BASE_URL_CARD}/tarot-images/${card.image_file}`
+          : getRandomImage()
+      }
+      alt={currentLang === "tr" ? card.turkish_name : card.name}
+      style={{
+        width: "40px",
+        height: "60px",
+        borderRadius: "6px",
+        objectFit: "cover",
+      }}
+    />
+  </td>
 
-                      {/* CARD NUMBER */}
-                      <td>{card.card_number}</td>
+  {/* CARD NUMBER */}
+  <td>{card.card_number}</td>
 
-                      {/* NAME */}
-                      <td>
-                        <div className="fw-bold">{card.name}</div>
-                        <small className="text-muted">
-                          {card.turkish_name}
-                        </small>
-                      </td>
+  {/* NAME */}
+  <td>
+    <div className="fw-bold">
+      {currentLang === "tr" ? card.turkish_name : card.name}
+    </div>
+  </td>
 
-                      {/* ARCANA */}
-                      <td>
-                        <span className="badge bg-primary">{card.arcana}</span>
-                      </td>
+  {/* ARCANA */}
+  <td>
+    <span className="badge bg-primary">{card.arcana}</span>
+  </td>
 
-                      {/* SUIT */}
-                      <td>{card.suit}</td>
+  {/* SUIT */}
+  <td>{card.suit}</td>
 
-                      {/* ELEMENT */}
-                      <td>{card.element}</td>
+  {/* ELEMENT */}
+  {/* <td>{card.element}</td> */}
 
-                      {/* ACTION */}
-                      <td className="text-end">
-                        {/* View */}
-                        <button
-                          className="btn btn-sm me-2"
-                          style={{
-                            backgroundColor: "#e3f2fd",
-                            color: "#0d6efd",
-                          }}
-                          onClick={() => openModal("view", card)}
-                        >
-                          <i className="bi bi-eye"></i>
-                        </button>
+  {/* ACTION */}
+<td className="text-end">
+  <div className="d-flex justify-content-end gap-2">
+    
+    <button
+      className="btn btn-sm btn-outline-primary"
+      onClick={() => openModal("view", card)}
+      title="View"
+    >
+      <i className="bi bi-eye"></i>
+    </button>
 
-                        {/* Edit */}
-                        <button
-                          className="btn btn-sm me-2"
-                          style={{
-                            backgroundColor: "#fff3cd",
-                            color: "#ffc107",
-                          }}
-                          onClick={() => openModal("edit", card)}
-                        >
-                          <i className="bi bi-pencil-square"></i>
-                        </button>
+    <button
+      className="btn btn-sm btn-outline-success"
+      onClick={() => openModal("edit", card)}
+      title="Edit"
+    >
+      <i className="bi bi-pencil-square"></i>
+    </button>
 
-                        {/* Delete */}
-                        <button
-                          className="btn btn-sm"
-                          style={{
-                            backgroundColor: "#f8d7da",
-                            color: "#dc3545",
-                          }}
-                          onClick={() => handleDelete(card.id)}
-                        >
-                          <i className="bi bi-trash"></i>
-                        </button>
-                      </td>
-                    </tr>
+    <button
+      className="btn btn-sm btn-outline-danger"
+      onClick={() => handleDelete(card.id)}
+      title="Delete"
+    >
+      <i className="bi bi-trash"></i>
+    </button>
+
+  </div>
+</td>
+</tr>
                   ))
                 )}
               </tbody>
@@ -366,7 +366,9 @@ const fallbackImage = useMemo(() => getRandomImage(), []);
               {t("cards.prev")}
             </button>
 
-            <span>{t("cards.page")} {page}</span>
+            <span>
+              {t("cards.page")} {page}
+            </span>
 
             <button
               className="btn btn-outline-secondary btn-sm"

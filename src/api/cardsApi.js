@@ -15,6 +15,11 @@ export const getTarotCardsApi = (params) => {
   });
 };
 
+// UPDATE
+export const updateTarotCardApi = (id, formData) => {
+  return axiosFormData.put(`/admin/tarot-cards/${id}/`, formData);
+};
+
 export const getKatinaCardsApi = (params) => { 
   return axiosJSONData.get("/admin/katina-cards", {
     params: params,
