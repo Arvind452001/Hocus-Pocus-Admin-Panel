@@ -29,7 +29,7 @@ const TokenPackages = () => {
 
   useEffect(() => {
     fetchPackages();
-  }, [includeInactive]); // 👈 refetch on dropdown change
+  }, [includeInactive,lang]); // 👈 refetch on dropdown change
 
   const fetchPackages = async () => {
     try {

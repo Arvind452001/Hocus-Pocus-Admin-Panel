@@ -6,53 +6,52 @@ const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
   const isView = mode === "view";
   const isEdit = mode === "edit";
   const isAdd = mode === "add";
+  
+const lang = localStorage.getItem("lang") || "en";
 
-  const [form, setForm] = useState({
-    name: "",
-    turkish_name: "",
-    card_number: "",
-    arcana: "Major",
-    suit: "",
-    element: "",
-    meaning: "",
-    keywords: "",
-    upright_meaning: "",
-    reversed_meaning: "",
-    file: null,
-  });
+const [form, setForm] = useState({
+  name: "",
+  card_number: "",
+  arcana: "Major",
+  suit: "",
+  element: "",
+  meaning: "",
+  keywords: "",
+  file: null,
+});
 
   // ✅ Set data for edit + view
-  useEffect(() => {
-    if (selectedData) {
-      setForm({
-        name: selectedData.name || "",
-        turkish_name: selectedData.turkish_name || "",
-        card_number: selectedData.card_number || "",
-        arcana: selectedData.arcana || "Major",
-        suit: selectedData.suit || "",
-        element: selectedData.element || "",
-        meaning: selectedData.meaning || "",
-        keywords: selectedData.keywords || "",
-        upright_meaning: selectedData.upright_meaning || "",
-        reversed_meaning: selectedData.reversed_meaning || "",
-        file: null,
-      });
-    } else {
-      setForm({
-        name: "",
-        turkish_name: "",
-        card_number: "",
-        arcana: "Major",
-        suit: "",
-        element: "",
-        meaning: "",
-        keywords: "",
-        upright_meaning: "",
-        reversed_meaning: "",
-        file: null,
-      });
-    }
-  }, [selectedData, mode]);
+useEffect(() => {
+  const lang = localStorage.getItem("lang") || "en";
+
+  const getValue = (obj, key) => {
+    return obj?.[`${key}_${lang}`] || obj?.[key] || "";
+  };
+
+  if (selectedData) {
+    setForm({
+      name: getValue(selectedData, "name"),
+      card_number: selectedData.card_number || "",
+      arcana: selectedData.arcana || "Major",
+      suit: selectedData.suit || "",
+      element: selectedData.element || "",
+      meaning: getValue(selectedData, "meaning"),
+      keywords: getValue(selectedData, "keywords"),
+      file: null,
+    });
+  } else {
+    setForm({
+      name: "",
+      card_number: "",
+      arcana: "Major",
+      suit: "",
+      element: "",
+      meaning: "",
+      keywords: "",
+      file: null,
+    });
+  }
+}, [selectedData, mode, lang]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -109,18 +108,6 @@ const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
                     className="form-control"
                     name="name"
                     value={form.name}
-                    onChange={handleChange}
-                    disabled={isView}
-                  />
-                </div>
-
-                {/* Turkish Name */}
-                <div className="col-md-6 mb-3">
-                  <label className="form-label">{t("cardModal.turkishName")}</label>
-                  <input
-                    className="form-control"
-                    name="turkish_name"
-                    value={form.turkish_name}
                     onChange={handleChange}
                     disabled={isView}
                   />
@@ -202,33 +189,8 @@ const CardModal = ({ show, onClose, mode, selectedData, onSubmit }) => {
                   />
                 </div>
 
-                {/* Upright */}
-                <div className="col-md-6 mb-3">
-                  <label className="form-label">{t("cardModal.uprightMeaning")}</label>
-                  <textarea
-                    className="form-control"
-                    rows="3"
-                    name="upright_meaning"
-                    value={form.upright_meaning}
-                    onChange={handleChange}
-                    disabled={isView}
-                  />
-                </div>
-
-                {/* Reversed */}
-                <div className="col-md-6 mb-3">
-                  <label className="form-label">{t("cardModal.reversedMeaning")}</label>
-                  <textarea
-                    className="form-control"
-                    rows="3"
-                    name="reversed_meaning"
-                    value={form.reversed_meaning}
-                    onChange={handleChange}
-                    disabled={isView}
-                  />
-                </div>
-
-                {/* File Upload */}
+             
+{/* File Upload */}
                 {!isView && (
                   <div className="col-md-12 mb-3">
                     <label className="form-label">{t("cardModal.uploadImage")}</label>
