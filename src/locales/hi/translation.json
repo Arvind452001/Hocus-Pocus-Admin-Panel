@@ -451,7 +451,19 @@
     "extraDataExample": "उदा. {\"screen\":\"home\"}"
   },
   
-   "common": {
+   "contactMessages": {
+    "replyMessage": "प्रत्युत्तर संदेश",
+    "reply": "प्रत्युत्तर",
+    "sendReply": "प्रत्युत्तर भेजें",
+    "back": "पीछे",
+    "success": "प्रत्युत्तर सफलतापूर्वक भेजा गया",
+    "failed": "प्रत्युत्तर भेजने में विफल",
+    "emailLabel": "ईमेल:",
+    "subjectLabel": "विषय:",
+    "messageLabel": "संदेश:"
+  },
+
+  "common": {
     "show": "दिखाएँ",
     "entries": "प्रविष्टियाँ",
     "view": "देखें",

@@ -460,6 +460,18 @@
     "extraDataExample": "e.g. {\"screen\":\"home\"}"
   },
 
+  "contactMessages": {
+    "replyMessage": "Reply Message",
+    "reply": "Reply",
+    "sendReply": "Send Reply",
+    "back": "Back",
+    "success": "Reply sent successfully",
+    "failed": "Failed to send reply",
+    "emailLabel": "Email:",
+    "subjectLabel": "Subject:",
+    "messageLabel": "Message:"
+  },
+
   "common": {
     "show": "Show",
     "entries": "entries",

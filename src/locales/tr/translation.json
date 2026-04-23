@@ -454,7 +454,19 @@
     "extraDataExample": "örnek: {\"screen\":\"home\"}"
   },
   
-   "common": {
+   "contactMessages": {
+    "replyMessage": "Yanıt Mesajı",
+    "reply": "Yanıtla",
+    "sendReply": "Yanıtı Gönder",
+    "back": "Geri",
+    "success": "Yanıt başarıyla gönderildi",
+    "failed": "Yanıt gönderilemedi",
+    "emailLabel": "E-posta:",
+    "subjectLabel": "Konu:",
+    "messageLabel": "Mesaj:"
+  },
+
+  "common": {
     "show": "Göster",
     "entries": "kayıt",
     "view": "Görüntüle",

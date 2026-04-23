@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axiosJSONData from "../api/axiosJSONData";
 import Loader from "../components/Loader";
 import { useTranslation } from "react-i18next";
@@ -8,12 +8,30 @@ const ContactMessages = () => {
 
   const [messages, setMessages] = useState([]);
   const [selectedMessage, setSelectedMessage] = useState(null);
-
+console.log("Selected Message:", selectedMessage); // Debug log 
   const [loading, setLoading] = useState(false);
+
+  // ✅ reply mode
+  const [isReplyMode, setIsReplyMode] = useState(false);
+  const [replyLoading, setReplyLoading] = useState(false);
+
+  const [replyForm, setReplyForm] = useState({
+    title: "",
+    body: "",
+    notification_type: "",
+    data: "",
+    save_to_db: true,
+  });
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
+
+  const modalRef = useRef(null);
+  const closeModal = () => {
+  const modal = window.bootstrap.Modal.getInstance(modalRef.current);
+  modal?.hide();
+};
 
   const fetchMessages = async () => {
     try {
@@ -40,41 +58,62 @@ const ContactMessages = () => {
 
   const handleView = (msg) => {
     setSelectedMessage(msg);
+    setIsReplyMode(false); // reset
+  };
+
+  // ✅ handle reply input
+  const handleReplyChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setReplyForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  // ✅ submit reply
+  const handleReplySubmit = async () => {
+    try {
+      setReplyLoading(true);
+
+      const payload = {
+        user_id: selectedMessage?.id, // ✅ auto set
+        title: replyForm.title,
+        body: replyForm.body,
+        notification_type: replyForm.notification_type,
+        data: replyForm.data,
+        save_to_db: replyForm.save_to_db,
+      };
+
+      await axiosJSONData.post("/notifications/admin/contect-notification", payload);
+
+      alert(t("contactMessages.success"));
+      closeModal();
+      setIsReplyMode(false);
+      setReplyForm({
+        title: "",
+        body: "",
+        notification_type: "",
+        data: "",
+        save_to_db: true,
+      });
+   } catch (err) {
+      console.error(err);
+      alert(t("contactMessages.failed"));
+    } finally {
+      setReplyLoading(false);
+    }
   };
 
   return (
     <div className="container mt-4">
       <h3>{t("sideBar.ContactMessages")}</h3>
 
-      {/* 🔽 Per Page Selector */}
-      <div className="d-flex justify-content-between align-items-center mt-3">
-        <div>
-          <label>{t("common.show")}</label>
-          <select
-            value={limit}
-            onChange={(e) => {
-              setLimit(Number(e.target.value));
-              setPage(1);
-            }}
-            className="form-select d-inline w-auto mx-2"
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-          </select>
-          {t("common.entries")}
-        </div>
-      </div>
-
-      {/* 🔽 Table */}
+      {/* TABLE */}
       {loading ? (
         <Loader />
       ) : (
-        <div
-          className="table-responsive rounded shadow-sm mt-3"
-          style={{ overflow: "hidden" }}
-        >
-          <table className="table table-bordered mb-0">
+        <div className="table-responsive mt-3">
+          <table className="table table-bordered">
             <thead className="table-dark">
               <tr>
                 <th>#</th>
@@ -119,82 +158,115 @@ const ContactMessages = () => {
         </div>
       )}
 
-      {/* 🔽 Pagination */}
-      <div className="d-flex justify-content-center align-items-center gap-2 mt-3">
-        <button
-          className="btn btn-secondary"
-          disabled={page === 1}
-          onClick={() => setPage(page - 1)}
-        >
-          {t("common.prev")}
-        </button>
-
-        {[...Array(totalPages)].map((_, i) => (
-          <button
-            key={i}
-            className={`btn ${
-              page === i + 1 ? "btn-primary" : "btn-outline-primary"
-            }`}
-            onClick={() => setPage(i + 1)}
-          >
-            {i + 1}
-          </button>
-        ))}
-
-        <button
-          className="btn btn-secondary"
-          disabled={page === totalPages}
-          onClick={() => setPage(page + 1)}
-        >
-          {t("common.next")}
-        </button>
-      </div>
-
-      {/* 🔽 Modal */}
-      <div className="modal fade" id="viewModal" tabIndex="-1">
+      {/* 🔽 MODAL */}
+      <div ref={modalRef} className="modal fade" id="viewModal" tabIndex="-1">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
+
             <div className="modal-header">
-              <h5 className="modal-title">{t("common.view")}</h5>
-              <button
-                className="btn-close"
-                data-bs-dismiss="modal"
-              ></button>
+              <h5 className="modal-title">
+                {isReplyMode ? t("contactMessages.replyMessage") : t("common.view")}
+              </h5>
+              <button className="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div className="modal-body">
-              {selectedMessage && (
+              {selectedMessage && !isReplyMode && (
                 <>
-                  <p>
-                    <strong>{t("users.email")}:</strong>{" "}
-                    {selectedMessage.user_email}
-                  </p>
-                  <p>
-                    <strong>{t("support.subject")}:</strong>{" "}
-                    {selectedMessage.subject}
-                  </p>
-                  <p>
-                    <strong>{t("support.message")}:</strong>{" "}
-                    {selectedMessage.message}
-                  </p>
-                  <p>
-                    <strong>{t("userDetails.date")}:</strong>{" "}
-                    {new Date(
-                      selectedMessage.created_at
-                    ).toLocaleString()}
-                  </p>
+                  <p><strong>{t("contactMessages.emailLabel")}</strong> {selectedMessage.user_email}</p>
+                  <p><strong>{t("contactMessages.subjectLabel")}</strong> {selectedMessage.subject}</p>
+                  <p><strong>{t("contactMessages.messageLabel")}</strong> {selectedMessage.message}</p>
+                </>
+              )}
+
+              {/* ✅ REPLY FORM */}
+              {isReplyMode && (
+                <>
+                   <input
+                    type="text"
+                    name="title"
+                    placeholder={t("notification.title")}
+                    className="form-control mb-2"
+                    value={replyForm.title}
+                    onChange={handleReplyChange}
+                  />
+
+                   <textarea
+                    name="body"
+                    placeholder={t("notification.body")}
+                    className="form-control mb-2"
+                    value={replyForm.body}
+                    onChange={handleReplyChange}
+                  />
+
+                   <select
+                    name="notification_type"
+                    className="form-control mb-2"
+                    value={replyForm.notification_type}
+                    onChange={handleReplyChange}
+                  >
+                    <option value="">{t("notification.selectType")}</option>
+                    <option value="info">{t("notification.typeInfo")}</option>
+                    <option value="alert">{t("notification.typeAlert")}</option>
+                  </select>
+
+                   <textarea
+                    name="data"
+                    placeholder={t("notification.extraData")}
+                    className="form-control mb-2"
+                    value={replyForm.data}
+                    onChange={handleReplyChange}
+                  />
+
+                  <div className="form-check">
+                    <input
+                      type="checkbox"
+                      name="save_to_db"
+                      checked={replyForm.save_to_db}
+                      onChange={handleReplyChange}
+                      className="form-check-input"
+                    />
+                     <label className="form-check-label">
+                      {t("notification.saveToDb")}
+                    </label>
+                  </div>
                 </>
               )}
             </div>
 
             <div className="modal-footer">
-              <button
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                {t("common.close")}
-              </button>
+              {!isReplyMode ? (
+                <>
+                   <button
+                    className="btn btn-primary"
+                    onClick={() => setIsReplyMode(true)}
+                  >
+                    {t("contactMessages.reply")}
+                  </button>
+                  <button className="btn btn-secondary" data-bs-dismiss="modal">
+                    {t("common.close")}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    className="btn btn-success"
+                    onClick={handleReplySubmit}
+                    disabled={replyLoading}
+                  >
+                     {replyLoading ? <span className="spinner-border spinner-border-sm me-2" role="status"></span> : t("contactMessages.sendReply")}
+                  </button>
+ 
+                   <button
+                    className="btn btn-secondary"
+                    onClick={() => setIsReplyMode(false)}
+                  >
+                    {t("contactMessages.back")}
+                  </button>
+                </>
+              )}
             </div>
+
           </div>
         </div>
       </div>
