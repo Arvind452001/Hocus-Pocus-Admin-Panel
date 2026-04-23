@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { deleteCategoryApi, getCategoriesApi } from "../api/Api";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "../context/LanguageProvider";
+import Loader from "../components/Loader";
 
 const Categories = () => {
   const [search, setSearch] = useState("");
@@ -9,17 +11,25 @@ const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  /* ================= FETCH CATEGORIES ================= */
-  const currentLang = localStorage.getItem("lang") || "en";
-
   const { t } = useTranslation();
+  const { language } = useLanguage(); // 👈 GLOBAL LANGUAGE
+
+  /* ================= HELPER ================= */
+  const getLangValue = (obj, key) => {
+    return obj?.[`${key}_${language}`] || obj?.[key] || "";
+  };
+
+  /* ================= FETCH ================= */
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [language]); // 👈 🔥 MAIN POINT
 
   const fetchCategories = async () => {
+    setLoading(true);
     try {
-      const res = await getCategoriesApi();
+      const res = await getCategoriesApi({
+        lang: language, // 👈 API me bhi bhejo
+      });
 
       setCategories(res?.data?.categories || []);
     } catch (error) {
@@ -29,31 +39,25 @@ const Categories = () => {
     }
   };
 
-  /* ================= DELETE CATEGORY ================= */
-
+  /* ================= DELETE ================= */
   const handleDeleteCategory = async (id) => {
     const confirmDelete = window.confirm(t("categories.deleteConfirm"));
-
     if (!confirmDelete) return;
 
     try {
       await deleteCategoryApi(id);
-
       setCategories((prev) => prev.filter((cat) => cat.id !== id));
     } catch (error) {
       console.error("Delete failed", error);
     }
   };
 
-  /* ================= FILTER + LIMIT ================= */
-
+  /* ================= FILTER ================= */
   const filteredData = categories
     .filter((cat) => {
-  const name =
-    currentLang === "tr" ? cat.name_tr : cat.name;
-
-  return name.toLowerCase().includes(search.toLowerCase());
-})
+      const name = getLangValue(cat, "name");
+      return name.toLowerCase().includes(search.toLowerCase());
+    })
     .slice(0, entries);
 
   return (
@@ -61,8 +65,8 @@ const Categories = () => {
       <div className="page-section">
         <div className="card">
           <div className="card-body">
-            {/* HEADER */}
 
+            {/* HEADER */}
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h5>{t("categories.title")}</h5>
 
@@ -75,39 +79,19 @@ const Categories = () => {
               </Link>
             </div>
 
-            {/* SEARCH + LIMIT */}
-
+            {/* SEARCH */}
             <div className="d-flex justify-content-between mb-3">
-              <div>
-                <select
-                  className="form-select"
-                  style={{ width: "120px" }}
-                  value={entries}
-                  onChange={(e) => setEntries(Number(e.target.value))}
-                >
-                  <option value={5}>5</option>
-                  <option value={10}>10</option>
-                  <option value={25}>25</option>
-                  <option value={50}>50</option>
-                </select>
-
-                <small>{t("categories.entriesPerPage")}</small>
-              </div>
-
-              <div>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder={t("categories.search")}
-                  style={{ width: "220px" }}
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              </div>
+              <input
+                type="text"
+                className="form-control"
+                placeholder={t("categories.search")}
+                style={{ width: "220px" }}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
             </div>
 
             {/* TABLE */}
-
             <div className="table-responsive">
               <table className="table datatable">
                 <thead>
@@ -124,82 +108,73 @@ const Categories = () => {
                 </thead>
 
                 <tbody>
-                  {/* LOADING */}
 
                   {loading && (
                     <tr>
                       <td colSpan="8" className="text-center">
-                        {t("categories.loading")}
+                        {/* {t("categories.loading")} */}
+                         <Loader />
                       </td>
                     </tr>
                   )}
 
-                  {/* DATA */}
-
                   {!loading &&
                     filteredData.map((cat) => (
-                    <tr key={cat.id}>
-  <td>{cat.id}</td>
+                      <tr key={cat.id}>
+                        <td>{cat.id}</td>
 
-  <td>
-  {currentLang === "tr" ? cat.name_tr : cat.name}
-</td>
+                        <td>{getLangValue(cat, "name")}</td>
 
- <td>
-  {currentLang === "tr" ? cat.subtitle_tr : cat.subtitle}
-</td>
+                        <td>{getLangValue(cat, "subtitle")}</td>
 
-  <td>
-    <span className="badge bg-primary">
-      {cat.token_cost}
-    </span>
-  </td>
+                        <td>
+                          <span className="badge bg-primary">
+                            {cat.token_cost}
+                          </span>
+                        </td>
 
-  {/* ✅ FIX HERE */}
-  <td>
-    {cat.is_free_daily
-      ? t("categories.yes")
-      : t("categories.no")}
-  </td>
+                        <td>
+                          {cat.is_free_daily
+                            ? t("categories.yes")
+                            : t("categories.no")}
+                        </td>
 
-  <td>
-    <span className="badge bg-info">
-      {cat.reading_count}
-    </span>
-  </td>
+                        <td>
+                          <span className="badge bg-info">
+                            {cat.reading_count}
+                          </span>
+                        </td>
 
-  <td>
-    {cat.is_active
-      ? t("categories.active")
-      : t("categories.disabled")}
-  </td>
+                        <td>
+                          {cat.is_active
+                            ? t("categories.active")
+                            : t("categories.disabled")}
+                        </td>
 
-  <td>
-    <Link
-      to={`/category-view/${cat.id}`}
-      className="btn btn-sm btn-outline-primary me-1"
-    >
-      <i className="bi bi-eye"></i>
-    </Link>
+                        <td>
+                          <Link
+                            to={`/category-view/${cat.id}`}
+                            className="btn btn-sm btn-outline-primary me-1"
+                          >
+                            👁
+                          </Link>
 
-    <Link
-      to={`/category-edit/${cat.id}`}
-      className="btn btn-sm btn-outline-success me-1"
-    >
-      <i className="bi bi-pencil"></i>
-    </Link>
+                          <Link
+                            to={`/category-edit/${cat.id}`}
+                            className="btn btn-sm btn-outline-success me-1"
+                          >
+                            ✏️
+                          </Link>
 
-    <button
-      onClick={() => handleDeleteCategory(cat.id)}
-      className="btn btn-sm btn-outline-danger"
-    >
-      <i className="bi bi-trash"></i>
-    </button>
-  </td>
-</tr>
+                          <button
+                            onClick={() => handleDeleteCategory(cat.id)}
+                            className="btn btn-sm btn-outline-danger"
+                          >
+                            🗑
+                          </button>
+                        </td>
+                      </tr>
                     ))}
-
-                  {/* EMPTY */}
 
                   {!loading && filteredData.length === 0 && (
                     <tr>
@@ -208,9 +183,11 @@ const Categories = () => {
                       </td>
                     </tr>
                   )}
+
                 </tbody>
               </table>
             </div>
+
           </div>
         </div>
       </div>

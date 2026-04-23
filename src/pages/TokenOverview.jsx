@@ -4,6 +4,7 @@ import {
   cleanupExpiredTokensApi,
   getTokensOverviewApi,
 } from "../api/TokenAPIs";
+import Loader from "../components/Loader";
 
 const TokenOverview = () => {
   const { t } = useTranslation();
@@ -136,8 +137,7 @@ const TokenOverview = () => {
                 {loading ? (
                   <tr>
                     <td colSpan="4" className="text-center py-4">
-                      <div className="spinner-border spinner-border-sm text-primary me-2" />
-                      {t("tokenOverview.loading")}
+                     <Loader />
                     </td>
                   </tr>
                 ) : error ? (

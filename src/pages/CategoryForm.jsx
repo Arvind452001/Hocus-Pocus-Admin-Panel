@@ -6,12 +6,14 @@ import {
   updateCategoryApi,
 } from "../api/Api";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "../context/LanguageProvider";
 
 const CategoryForm = ({ mode = "create" }) => {
   const navigate = useNavigate();
   const { id } = useParams();
 
   const { t } = useTranslation();
+  const { language } = useLanguage(); // ✅ USE CONTEXT
 
   const [loading, setLoading] = useState(false);
 
@@ -23,25 +25,30 @@ const CategoryForm = ({ mode = "create" }) => {
     description: "",
   });
 
+  /* ================= HELPER ================= */
+  const getLangValue = (obj, key) => {
+    return obj?.[`${key}_${language}`] || obj?.[key] || "";
+  };
+
   /* ================= FETCH CATEGORY ================= */
 
   useEffect(() => {
     if (mode !== "create" && id) {
       fetchCategory();
     }
-  }, [id]);
+  }, [id, language]); // 🔥 IMPORTANT
 
   const fetchCategory = async () => {
     try {
-      const res = await getCategoryDetailsApi(id);
+      const res = await getCategoryDetailsApi(id, { lang: language });
       const cat = res?.data?.category;
 
       setFormData({
-        name: cat.name || "",
-        subtitle: cat.subtitle || "",
+        name: getLangValue(cat, "name"),
+        subtitle: getLangValue(cat, "subtitle"),
         token_cost: cat.token_cost || "",
         is_free_daily: cat.is_free_daily || false,
-        description: cat.description || "",
+        description: getLangValue(cat, "description"),
       });
     } catch (error) {
       console.error("Category fetch failed", error);
@@ -51,17 +58,17 @@ const CategoryForm = ({ mode = "create" }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
   const handleFreeDaily = (e) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       is_free_daily: e.target.value === "true",
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -120,7 +127,6 @@ const CategoryForm = ({ mode = "create" }) => {
                     type="text"
                     name="name"
                     className="form-control"
-                    placeholder={t("categoryForm.namePlaceholder")}
                     value={formData.name}
                     onChange={handleChange}
                     disabled={mode === "view"}
@@ -137,7 +143,6 @@ const CategoryForm = ({ mode = "create" }) => {
                     type="text"
                     name="subtitle"
                     className="form-control"
-                    placeholder={t("categoryForm.subtitlePlaceholder")}
                     value={formData.subtitle}
                     onChange={handleChange}
                     disabled={mode === "view"}
@@ -153,8 +158,6 @@ const CategoryForm = ({ mode = "create" }) => {
                     type="number"
                     name="token_cost"
                     className="form-control"
-                    min="0"
-                    placeholder={t("categoryForm.tokenPlaceholder")}
                     value={formData.token_cost}
                     onChange={handleChange}
                     disabled={mode === "view"}
@@ -186,28 +189,23 @@ const CategoryForm = ({ mode = "create" }) => {
                     className="form-control"
                     rows="4"
                     name="description"
-                    placeholder={t("categoryForm.descriptionPlaceholder")}
                     value={formData.description}
                     onChange={handleChange}
                     disabled={mode === "view"}
                   />
                 </div>
+
               </div>
 
               {mode !== "view" && (
-                <button
-                  className="btn btn-primary mt-4"
-                  type="submit"
-                  disabled={loading}
-                >
-                  {loading
-                    ? t("categoryForm.saving")
-                    : mode === "create"
+                <button className="btn btn-primary mt-4" type="submit">
+                  {mode === "create"
                     ? t("categoryForm.addBtn")
                     : t("categoryForm.updateBtn")}
                 </button>
               )}
             </form>
+
           </div>
         </div>
       </div>

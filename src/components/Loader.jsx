@@ -1,8 +1,9 @@
-// src/components/common/Loader.jsx
-
 import React from "react";
+import { useTranslation } from "react-i18next";
 
-const Loader = ({ fullScreen = false, text = "Loading..." }) => {
+const Loader = ({ fullScreen = false, text }) => {
+  const { t } = useTranslation();
+
   return (
     <div
       className={`d-flex flex-column justify-content-center align-items-center ${
@@ -10,7 +11,9 @@ const Loader = ({ fullScreen = false, text = "Loading..." }) => {
       }`}
     >
       <div className="spinner-border text-primary" role="status" />
-      <p className="mt-2 mb-0">{text}</p>
+      <p className="mt-2 mb-0">
+        {text || t("tokenOverview.loading")}
+      </p>
     </div>
   );
 };

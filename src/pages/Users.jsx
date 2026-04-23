@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { BASE_URL_CARD } from "../config/apiConfig";
 import { sendToLessThan10, sendToUser } from "../api/notificationsApi";
+import Loader from "../components/Loader";
 
 const Users = () => {
   const [search, setSearch] = useState("");
@@ -254,9 +255,7 @@ const Users = () => {
                       <tr>
                         <td colSpan="5" className="text-center">
                           <div className="d-flex justify-content-center">
-                            <div className="spinner-border" role="status">
-                              <span className="sr-only"></span>
-                            </div>
+                             <Loader />
                           </div>
                         </td>
                       </tr>

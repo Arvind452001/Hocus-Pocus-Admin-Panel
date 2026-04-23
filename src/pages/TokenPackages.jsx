@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import TokenPackageModal from "../components/TokenPackageModal";
+import Loader from "../components/Loader";
 import {
   getTokenPackagesApi,
   createTokenPackageApi,
@@ -14,14 +15,15 @@ const TokenPackages = () => {
   const { t } = useTranslation();
 
   const [packages, setPackages] = useState([]);
+  const [loading, setLoading] = useState(false); // ✅ added
+  const [error, setError] = useState(""); // ✅ added
+
   const [showModal, setShowModal] = useState(false);
   const [mode, setMode] = useState("add");
   const [selected, setSelected] = useState(null);
 
-  // ✅ NEW STATE (dropdown)
   const [includeInactive, setIncludeInactive] = useState(false);
 
-  // ✅ Language from localStorage
   const lang = localStorage.getItem("lang") || "en";
   const getLocalizedValue = (en, tr) => {
     return lang === "tr" ? tr : en;
@@ -29,19 +31,25 @@ const TokenPackages = () => {
 
   useEffect(() => {
     fetchPackages();
-  }, [includeInactive,lang]); // 👈 refetch on dropdown change
+  }, [includeInactive, lang]);
 
   const fetchPackages = async () => {
     try {
+      setLoading(true);
+      setError("");
+
       const res = await getTokenPackagesApi({
         include_inactive: includeInactive,
         lang: lang,
       });
 
-      console.log(res);
-      setPackages(res.data.packages);
+      setPackages(res.data.packages || []);
     } catch (err) {
       console.log(err);
+      setError("Failed to fetch packages");
+      setPackages([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,6 +61,8 @@ const TokenPackages = () => {
 
   const handleSubmit = async (form) => {
     try {
+      setLoading(true);
+
       if (mode === "add") {
         await createTokenPackageApi(form);
       } else {
@@ -60,9 +70,12 @@ const TokenPackages = () => {
       }
 
       setShowModal(false);
-      fetchPackages();
+      await fetchPackages();
     } catch (err) {
       console.log(err);
+      setError("Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -70,20 +83,28 @@ const TokenPackages = () => {
     if (!window.confirm(t("tokenPackages.deleteConfirm"))) return;
 
     try {
+      setLoading(true);
       await deleteTokenPackageApi(id);
-      fetchPackages();
+      await fetchPackages();
     } catch (err) {
       console.log(err);
+      setError("Failed to delete package");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSetPopular = async (id) => {
     try {
+      setLoading(true);
       await setPopularPackageApi(id);
-      fetchPackages();
+      await fetchPackages();
       alert(t("tokenPackages.markedPopular"));
     } catch (err) {
       console.log(err?.response?.data || err.message);
+      setError("Failed to update package");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -97,7 +118,6 @@ const TokenPackages = () => {
               <h5>{t("tokenPackages.title")}</h5>
 
               <div className="d-flex gap-2">
-                {/* 🔽 Dropdown */}
                 <select
                   className="form-select"
                   style={{ width: "200px" }}
@@ -110,7 +130,6 @@ const TokenPackages = () => {
                   <option value="true">Include Inactive</option>
                 </select>
 
-                {/* ➕ Add Button */}
                 <button
                   className="btn btn-primary"
                   onClick={() => openModal("add")}
@@ -132,58 +151,74 @@ const TokenPackages = () => {
               </thead>
 
               <tbody>
-                {packages.map((pkg) => (
-                  <tr key={pkg.id}>
-                    <td>{getLocalizedValue(pkg.name, pkg.name_tr)}</td>
-
-                    <td>{pkg.tokens}</td>
-
-                    <td>{pkg.price}</td>
-
-                    <td>
-                      <div className="d-flex gap-2">
-                        {/* View */}
-                        <button
-                          className="btn btn-info btn-sm"
-                          onClick={() => openModal("view", pkg)}
-                        >
-                          <i className="bi bi-eye-fill"></i>
-                        </button>
-
-                        {/* Edit */}
-                        <button
-                          className="btn btn-warning btn-sm"
-                          onClick={() => openModal("edit", pkg)}
-                        >
-                          <i className="bi bi-pencil"></i>
-                        </button>
-
-                        {/* Delete */}
-                        <button
-                          className="btn btn-danger btn-sm"
-                          onClick={() => handleDelete(pkg.id)}
-                        >
-                          <i className="bi bi-trash3"></i>
-                        </button>
-
-                        {/* Popular */}
-                        <button
-                          className={`btn btn-sm ${
-                            pkg.is_popular
-                              ? "btn-success"
-                              : "btn-outline-warning"
-                          }`}
-                          onClick={() => handleSetPopular(pkg.id)}
-                        >
-                          <i className="bi bi-star-fill me-1"></i>
-                          {pkg.is_popular
-                            ? t("tokenPackages.popular")
-                            : t("tokenPackages.makePopular")}
-                        </button>
-                      </div>
+                {loading ? (
+                  <tr>
+                    <td colSpan="4" className="text-center py-4">
+                      <Loader />
                     </td>
                   </tr>
-                ))}
+                ) : error ? (
+                  <tr>
+                    <td colSpan="4" className="text-center text-danger">
+                      {error}
+                    </td>
+                  </tr>
+                ) : packages.length === 0 ? (
+                  <tr>
+                    <td colSpan="4" className="text-center text-muted">
+                      No packages found
+                    </td>
+                  </tr>
+                ) : (
+                  packages.map((pkg) => (
+                    <tr key={pkg.id}>
+                      <td>{getLocalizedValue(pkg.name, pkg.name_tr)}</td>
+
+                      <td>{pkg.tokens}</td>
+
+                      <td>{pkg.price}</td>
+
+                      <td>
+                        <div className="d-flex gap-2">
+                          <button
+                            className="btn btn-info btn-sm"
+                            onClick={() => openModal("view", pkg)}
+                          >
+                            <i className="bi bi-eye-fill"></i>
+                          </button>
+
+                          <button
+                            className="btn btn-warning btn-sm"
+                            onClick={() => openModal("edit", pkg)}
+                          >
+                            <i className="bi bi-pencil"></i>
+                          </button>
+
+                          <button
+                            className="btn btn-danger btn-sm"
+                            onClick={() => handleDelete(pkg.id)}
+                          >
+                            <i className="bi bi-trash3"></i>
+                          </button>
+
+                          <button
+                            className={`btn btn-sm ${
+                              pkg.is_popular
+                                ? "btn-success"
+                                : "btn-outline-warning"
+                            }`}
+                            onClick={() => handleSetPopular(pkg.id)}
+                          >
+                            <i className="bi bi-star-fill me-1"></i>
+                            {pkg.is_popular
+                              ? t("tokenPackages.popular")
+                              : t("tokenPackages.makePopular")}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

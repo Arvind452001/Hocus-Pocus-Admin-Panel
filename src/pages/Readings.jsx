@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { deleteReadingsApi, getReadingsApi } from "../api/Api";
 import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 
 const Readings = () => {
   const { t } = useTranslation();
@@ -131,7 +132,8 @@ const Readings = () => {
                       {loading ? (
                         <tr>
                           <td colSpan="5" className="text-center">
-                            {t("readings.loading")}
+                            {/* {t("readings.loading")} */}
+                             <Loader />
                           </td>
                         </tr>
                       ) : filteredData.length > 0 ? (

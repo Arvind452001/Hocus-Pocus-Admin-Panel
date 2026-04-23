@@ -1,120 +1,96 @@
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import {
   sendBroadcastNotification,
   sendToMultipleUsers,
   sendToUser,
 } from "../api/notificationsApi";
-import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import Loader from "../components/Loader"; // 👈 your loader
 
 const BroadcastNotification = () => {
   const [loading, setLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     title: "",
     body: "",
-    title_tr: "",
-    body_tr: "",
     notification_type: "",
-    data: "",
     save_to_db: true,
     only_with_tokens: false,
   });
-  const { id } = useParams(); // 👈 get id
+
+  const { id } = useParams();
   const { t } = useTranslation();
   const location = useLocation();
   const userIds = location.state?.userIds || [];
-  console.log("Received userIds:", userIds); // ✅ debug log
-
   const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: type === "checkbox" ? checked : value,
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let parsedData = {};
+    const payload = {
+      ...formData,
+      title_tr: "",
+      body_tr: "",
+    };
 
     try {
-      const userData = formData.data ? JSON.parse(formData.data) : {};
+      setLoading(true);
 
-      parsedData = {
-        additionalProp1: userData,
-      };
-    } catch (e) {
-      alert(t("notification.invalidJson"));
-      return;
-    }
-
-    try {
-      const payload = {
-        title: formData.title,
-        body: formData.body,
-        title_tr: formData.title_tr,
-        body_tr: formData.body_tr,
-        notification_type: formData.notification_type,
-        data: parsedData,
-        save_to_db: formData.save_to_db,
-        only_with_tokens: formData.only_with_tokens,
-      };
-
-      let res;
-
-      // ✅ CASE 1: Multiple users selected
       if (userIds.length > 0) {
-        setLoading(true);
-        res = await sendToMultipleUsers({
+        await sendToMultipleUsers({
           ...payload,
-          user_ids: userIds, // 👈 array भेजो
+          user_ids: userIds,
         });
-        setLoading(false);
-        alert(t("notification.successMultiple"));
-      }
-
-      // ✅ CASE 2: Single user (params id)
-      else if (id) {
-        setLoading(true);
-        res = await sendToUser({
+        alert("Successfully sent to selected users");
+      } else if (id) {
+        await sendToUser({
           ...payload,
           user_id: id,
         });
-        setLoading(false);
-        alert(t("notification.successSingle"));
+        alert("Successfully sent to single user");
+      } else {
+        await sendBroadcastNotification(payload);
+        alert("Successfully sent as broadcast");
       }
 
-      // ✅ CASE 3: Broadcast
-      else {
-        setLoading(true);
-        res = await sendBroadcastNotification(payload);
-        setLoading(false);
-        alert(t("notification.successBroadcast"));
-      }
-
-      console.log(res.data);
       navigate("/dashboard");
     } catch (err) {
       console.error(err.response?.data || err.message);
       alert(t("notification.error"));
+    } finally {
+      setLoading(false); // ✅ always run
     }
   };
+
+  // ✅ FULL SCREEN LOADER
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <Loader text ={"Sending notification..."}/>
+      </div>
+    );
+  }
 
   return (
     <div className="container mt-4">
       <h3>
         {userIds.length > 0
-          ? t("notification.headingMultiple", { count: userIds.length })
+          ? `Send to ${userIds.length} users`
           : id
-            ? t("notification.headingSingle")
-            : t("notification.headingBroadcast")}
+          ? "Send to user"
+          : "Broadcast Notification"}
       </h3>
 
       <form onSubmit={handleSubmit} className="card p-4 shadow">
-        {/* Title */}
         <input
           type="text"
           name="title"
@@ -124,7 +100,6 @@ const BroadcastNotification = () => {
           required
         />
 
-        {/* Body */}
         <textarea
           name="body"
           placeholder={t("notification.body")}
@@ -133,43 +108,17 @@ const BroadcastNotification = () => {
           required
         />
 
-        {/* Translated Title */}
-        <input
-          type="text"
-          name="title_tr"
-          placeholder={t("notification.titleTranslated")}
-          className="form-control mb-3"
-          onChange={handleChange}
-        />
-
-        {/* Translated Body */}
-        <textarea
-          name="body_tr"
-          placeholder={t("notification.bodyTranslated")}
-          className="form-control mb-3"
-          onChange={handleChange}
-        />
-
-        {/* Notification Type */}
         <select
           name="notification_type"
           className="form-control mb-3"
           onChange={handleChange}
         >
           <option value="">{t("notification.selectType")}</option>
-          <option value="info">{t("notification.typeInfo")}</option>
-          <option value="alert">{t("notification.typeAlert")}</option>
-          <option value="promo">{t("notification.typePromo")}</option>
+          <option value="info">Info</option>
+          <option value="alert">Alert</option>
+          <option value="promo">Promo</option>
         </select>
 
-        {/* Extra JSON Data */}
-        <textarea
-          name="data"
-          placeholder={`${t("notification.extraData")} (${t("notification.extraDataExample")})`}
-          className="form-control mb-3"
-          onChange={handleChange}
-        />
-        {/* Checkboxes */}
         <div className="form-check">
           <input
             type="checkbox"
@@ -196,14 +145,12 @@ const BroadcastNotification = () => {
           </label>
         </div>
 
-        {/* Submit */}
-
-        <button className="btn btn-primary w-100" disabled={loading}>
+        <button className="btn btn-primary w-100">
           {userIds.length > 0
             ? `Send to ${userIds.length} users 🚀`
             : id
-              ? t("notification.sendUser")
-              : t("notification.sendBroadcast")}
+            ? "Send to user"
+            : "Send broadcast"}
         </button>
       </form>
     </div>

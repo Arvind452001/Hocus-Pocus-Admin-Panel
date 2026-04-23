@@ -11,6 +11,7 @@ import {
 } from "../api/CardsAPI";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL, BASE_URL_CARD } from "../config/apiConfig";
+import Loader from "../components/Loader";
 
 const TarotCards = () => {
   const { t } = useTranslation();
@@ -21,7 +22,8 @@ const TarotCards = () => {
   const [selectedCategory, setSelectedCategory] = useState("1");
   const [search, setSearch] = useState("");
   const [isActive, setIsActive] = useState(""); // "", true, false
-
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   // 🔥 Pagination
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
@@ -36,7 +38,7 @@ const TarotCards = () => {
   const getLocalizedField = (obj, field) => {
     return currentLang === "tr" ? obj[`${field}_tr`] || obj[field] : obj[field];
   };
-console.log("Current Lang:", currentLang);
+  console.log("Current Lang:", currentLang);
   // 🔥 Dummy fallback
   const dummyData = [
     {
@@ -72,6 +74,9 @@ console.log("Current Lang:", currentLang);
   // ✅ Fetch Cards
   const fetchCards = async () => {
     try {
+      setLoading(true);
+      setError("");
+
       const payload = {
         ...(selectedCategory && { category_id: selectedCategory }),
         ...(search && { search }),
@@ -80,11 +85,7 @@ console.log("Current Lang:", currentLang);
         limit,
       };
 
-      // console.log("🔥 PAYLOAD", payload);
-
       const res = await getTarotCardsApi(payload);
-
-      console.log("API RES 👉", res.data.cards);
 
       if (res?.data?.cards?.length > 0) {
         setCards(res.data.cards);
@@ -92,8 +93,11 @@ console.log("Current Lang:", currentLang);
         setCards([]);
       }
     } catch (err) {
-      console.log(err);
-      setCards(dummyData);
+      console.error(err);
+      setError("Failed to fetch cards");
+      setCards([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -271,85 +275,97 @@ console.log("Current Lang:", currentLang);
               </thead>
 
               <tbody>
-                {cards.length === 0 ? (
-                  <tr>
-                    <td colSpan="7" className="text-center text-muted">
-                      {t("cards.noCardsFound")}
-                    </td>
-                  </tr>
-                ) : (
+                 {loading ? (
+    <tr>
+      <td colSpan="7" className="text-center py-4">
+        <Loader />
+      </td>
+    </tr>
+  ) : error ? (
+    <tr>
+      <td colSpan="7" className="text-center text-danger">
+        {error}
+      </td>
+    </tr>
+  ) : cards.length === 0 ? (
+    <tr>
+      <td colSpan="7" className="text-center text-muted">
+        {t("cards.noCardsFound")}
+      </td>
+    </tr>
+  )  : (
                   cards.map((card) => (
-                   <tr key={card.id}>
-  {/* IMAGE */}
-  <td>
-    <img
-      src={
-        card?.image_file
-          ? `${BASE_URL_CARD}/tarot-images/${card.image_file}`
-          : getRandomImage()
-      }
-      alt={currentLang === "tr" ? card.turkish_name : card.name}
-      style={{
-        width: "40px",
-        height: "60px",
-        borderRadius: "6px",
-        objectFit: "cover",
-      }}
-    />
-  </td>
+                    <tr key={card.id}>
+                      {/* IMAGE */}
+                      <td>
+                        <img
+                          src={
+                            card?.image_file
+                              ? `${BASE_URL_CARD}/tarot-images/${card.image_file}`
+                              : getRandomImage()
+                          }
+                          alt={
+                            currentLang === "tr" ? card.turkish_name : card.name
+                          }
+                          style={{
+                            width: "40px",
+                            height: "60px",
+                            borderRadius: "6px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </td>
 
-  {/* CARD NUMBER */}
-  <td>{card.card_number}</td>
+                      {/* CARD NUMBER */}
+                      <td>{card.card_number}</td>
 
-  {/* NAME */}
-  <td>
-    <div className="fw-bold">
-      {currentLang === "tr" ? card.turkish_name : card.name}
-    </div>
-  </td>
+                      {/* NAME */}
+                      <td>
+                        <div className="fw-bold">
+                          {currentLang === "tr" ? card.turkish_name : card.name}
+                        </div>
+                      </td>
 
-  {/* ARCANA */}
-  <td>
-    <span className="badge bg-primary">{card.arcana}</span>
-  </td>
+                      {/* ARCANA */}
+                      <td>
+                        <span className="badge bg-primary">{card.arcana}</span>
+                      </td>
 
-  {/* SUIT */}
-  <td>{card.suit}</td>
+                      {/* SUIT */}
+                      <td>{card.suit}</td>
 
-  {/* ELEMENT */}
-  {/* <td>{card.element}</td> */}
+                      {/* ELEMENT */}
+                      {/* <td>{card.element}</td> */}
 
-  {/* ACTION */}
-<td className="text-end">
-  <div className="d-flex justify-content-end gap-2">
-    
-    <button
-      className="btn btn-sm btn-outline-primary"
-      onClick={() => openModal("view", card)}
-      title="View"
-    >
-      <i className="bi bi-eye"></i>
-    </button>
+                      {/* ACTION */}
+                      <td className="text-end">
+                        <div className="d-flex justify-content-end gap-2">
+                          <button
+                            className="btn btn-sm btn-outline-primary"
+                            onClick={() => openModal("view", card)}
+                            title="View"
+                          >
+                            <i className="bi bi-eye"></i>
+                          </button>
 
-    <button
-      className="btn btn-sm btn-outline-success"
-      onClick={() => openModal("edit", card)}
-      title="Edit"
-    >
-      <i className="bi bi-pencil-square"></i>
-    </button>
+                          <button
+                            className="btn btn-sm btn-outline-success"
+                            onClick={() => openModal("edit", card)}
+                            title="Edit"
+                          >
+                            <i className="bi bi-pencil-square"></i>
+                          </button>
 
-    <button
-      className="btn btn-sm btn-outline-danger"
-      onClick={() => handleDelete(card.id)}
-      title="Delete"
-    >
-      <i className="bi bi-trash"></i>
-    </button>
-
-  </div>
-</td>
-</tr>
+                          <button
+                            className="btn btn-sm btn-outline-danger"
+                            onClick={() => handleDelete(card.id)}
+                            title="Delete"
+                          >
+                            <i className="bi bi-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
                   ))
                 )}
               </tbody>

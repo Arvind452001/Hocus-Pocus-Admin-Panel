@@ -1,52 +1,47 @@
+
+
+
+
 import { useNavigate } from "react-router-dom";
 import { useSidebar } from "../App";
 import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
 import { updateLanguageApi } from "../api/languageApi";
+import { useLanguage } from "../context/LanguageProvider";
 
 function Header({ title }) {
   const { toggleSidebar } = useSidebar();
-
   const navigate = useNavigate();
-
-  // ✅ your existing hook
   const { t } = useTranslation();
 
-  // ✅ ADD THIS (new)
-  const toggleLanguage = () => {
-    const newLang = i18n.language === "en" ? "tr" : "en";
-    i18n.changeLanguage(newLang);
-    localStorage.setItem("lang", newLang);
+  const { language, setLanguage } = useLanguage(); // ✅
+
+  const handleLanguageChange = async (lang) => {
+    try {
+      // ✅ MAIN FIX
+      setLanguage(lang);
+
+      // optional (already handled in context, but safe)
+      i18n.changeLanguage(lang);
+      localStorage.setItem("lang", lang);
+
+      await updateLanguageApi(lang);
+    } catch (error) {
+      console.error("Language update failed", error);
+    }
   };
 
-  // ✅ Sign out handler
   const handleLogout = () => {
-    localStorage.removeItem("token"); // token remove
-    navigate("/login"); // redirect
+    localStorage.removeItem("token");
+    navigate("/login");
   };
 
-  // ✅ Profile navigation
   const goToProfile = () => {
     navigate("/profile");
   };
 
-  const handleLanguageChange = async (lang) => {
-  try {
-    // 1. update UI instantly
-    i18n.changeLanguage(lang);
-
-    // 2. save locally
-    localStorage.setItem("lang", lang);
-
-    // 3. backend update (FORM DATA)
-    await updateLanguageApi(lang);
-
-  } catch (error) {
-    console.error("Language update failed", error);
-  }
-};
   return (
-    <header
+     <header
       style={{
         width: "100%",
         marginBottom: "0px",

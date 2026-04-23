@@ -10,11 +10,14 @@ import {
 } from "../api/CardsAPI";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL_CARD } from "../config/apiConfig";
+import Loader from "../components/Loader";
 
 const KatinaCards = () => {
   const { t } = useTranslation();
   const [cards, setCards] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   // 🔥 Filters State
   const [selectedCategory, setSelectedCategory] = useState("1");
@@ -31,29 +34,16 @@ const KatinaCards = () => {
 
   const currentLang = localStorage.getItem("lang") || "en";
   const getLocalizedField = (obj, field) => {
-  return currentLang === "tr"
-    ? obj[`${field}_tr`] || obj[field]
-    : obj[field];
-};
+    return currentLang === "tr" ? obj[`${field}_tr`] || obj[field] : obj[field];
+  };
   let navigate = useNavigate();
-  // 🔥 Dummy fallback
-  const dummyData = [
-    {
-      id: 1,
-      title: "The Sun",
-      type: "TAROT",
-      file: "sun_major_01.png",
-      status: "Active",
-      image: "https://via.placeholder.com/60x90",
-    },
-  ];
 
   const DEFAULT_IMAGES = [
-  "https://picsum.photos/40/60?random=1",
-  "https://picsum.photos/40/60?random=2",
-  "https://picsum.photos/40/60?random=3",
-  "https://picsum.photos/40/60?random=4",
-];
+    "https://picsum.photos/40/60?random=1",
+    "https://picsum.photos/40/60?random=2",
+    "https://picsum.photos/40/60?random=3",
+    "https://picsum.photos/40/60?random=4",
+  ];
 
   const getRandomImage = () => {
     return DEFAULT_IMAGES[Math.floor(Math.random() * DEFAULT_IMAGES.length)];
@@ -71,6 +61,9 @@ const KatinaCards = () => {
   // ✅ Fetch Cards
   const fetchCards = async () => {
     try {
+      setLoading(true);
+      setError("");
+
       const payload = {
         ...(selectedCategory && { category_id: selectedCategory }),
         ...(search && { search }),
@@ -79,11 +72,7 @@ const KatinaCards = () => {
         limit,
       };
 
-      // console.log("🔥 PAYLOAD", payload);
-
       const res = await getKatinaCardsApi(payload);
-
-      console.log("API RES 👉", res);
 
       if (res?.data?.cards?.length > 0) {
         setCards(res.data.cards);
@@ -91,8 +80,11 @@ const KatinaCards = () => {
         setCards([]);
       }
     } catch (err) {
-      console.log(err);
-      setCards(dummyData);
+      console.error(err);
+      setError("Failed to fetch cards");
+      setCards([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -273,128 +265,130 @@ const KatinaCards = () => {
                 </tr>
               </thead>
 
-              <tbody>
-                {cards.map((card) => (
-                <tr key={card.id}>
-  {/* IMAGE */}
-  <td style={{ verticalAlign: "middle" }}>
-    <img
-      src={
-        card?.image
-          ? `${BASE_URL_CARD}/${card.image}`
-          : getRandomImage()
-      }
-      alt={getLocalizedField(card, "name")}
-      onError={(e) => {
-        e.currentTarget.src = getRandomImage();
-      }}
-      style={{
-        width: "40px",
-        height: "60px",
-        borderRadius: "6px",
-        objectFit: "cover",
-      }}
-    />
-  </td>
+            <tbody>
+  {loading ? (
+    <tr>
+      <td colSpan="6" className="text-center py-4">
+        <Loader />
+      </td>
+    </tr>
+  ) : error ? (
+    <tr>
+      <td colSpan="6" className="text-center text-danger">
+        {error}
+      </td>
+    </tr>
+  ) : cards.length === 0 ? (
+    <tr>
+      <td colSpan="6" className="text-center text-muted">
+        {t("cards.noCardsFound")}
+      </td>
+    </tr>
+  ) : (
+    cards.map((card) => (
+      <tr key={card.id}>
+        {/* IMAGE */}
+        <td style={{ verticalAlign: "middle" }}>
+          <img
+            src={
+              card?.image
+                ? `${BASE_URL_CARD}/${card.image}`
+                : getRandomImage()
+            }
+            alt={getLocalizedField(card, "name")}
+            onError={(e) => {
+              e.currentTarget.src = getRandomImage();
+            }}
+            style={{
+              width: "40px",
+              height: "60px",
+              borderRadius: "6px",
+              objectFit: "cover",
+            }}
+          />
+        </td>
 
-  {/* NO */}
-  <td style={{ verticalAlign: "middle" }}>{card.id}</td>
+        {/* NO */}
+        <td style={{ verticalAlign: "middle" }}>{card.id}</td>
 
-  {/* NAME */}
-  <td style={{ verticalAlign: "middle" }}>
-    <div
-      className="fw-bold"
-      style={{
-        maxWidth: "180px",
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-      }}
-      title={getLocalizedField(card, "name")}
-    >
-      {getLocalizedField(card, "name")}
-    </div>
+        {/* NAME */}
+        <td style={{ verticalAlign: "middle" }}>
+          <div
+            className="fw-bold"
+            style={{
+              maxWidth: "180px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+            title={getLocalizedField(card, "name")}
+          >
+            {getLocalizedField(card, "name")}
+          </div>
 
-    <small
-      className="text-muted"
-      style={{
-        display: "block",
-        maxWidth: "180px",
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-      }}
-      title={getLocalizedField(card, "keywords")}
-    >
-      {getLocalizedField(card, "keywords")}
-    </small>
-  </td>
+          <small
+            className="text-muted"
+            style={{
+              display: "block",
+              maxWidth: "180px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+            title={getLocalizedField(card, "keywords")}
+          >
+            {getLocalizedField(card, "keywords")}
+          </small>
+        </td>
 
-  {/* MEANING */}
-  <td
-    style={{
-      verticalAlign: "middle",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-    }}
-  >
-    {getLocalizedField(card, "meaning")}
-  </td>
+        {/* MEANING */}
+        <td style={{ verticalAlign: "middle" }}>
+          {getLocalizedField(card, "meaning")}
+        </td>
 
-  {/* STATUS */}
-  <td style={{ verticalAlign: "middle" }}>
-    {card.is_active ? (
-      <span className="badge bg-success">
-        {t("cards.active")}
-      </span>
-    ) : (
-      <span className="badge bg-secondary">
-        {t("cards.inactive")}
-      </span>
-    )}
-  </td>
+        {/* STATUS */}
+        <td style={{ verticalAlign: "middle" }}>
+          {card.is_active ? (
+            <span className="badge bg-success">
+              {t("cards.active")}
+            </span>
+          ) : (
+            <span className="badge bg-secondary">
+              {t("cards.inactive")}
+            </span>
+          )}
+        </td>
 
-  {/* ACTION */}
-  <td
-    className="text-end"
-    style={{ verticalAlign: "middle", whiteSpace: "nowrap" }}
-  >
-    <button
-      className="btn btn-sm me-2"
-      style={{
-        backgroundColor: "#e3f2fd",
-        color: "#0d6efd",
-      }}
-      onClick={() => openModal("view", card)}
-    >
-      <i className="bi bi-eye"></i>
-    </button>
+        {/* ACTION */}
+        <td className="text-end" style={{ whiteSpace: "nowrap" }}>
+          <button
+            className="btn btn-sm me-2"
+            style={{ backgroundColor: "#e3f2fd", color: "#0d6efd" }}
+            onClick={() => openModal("view", card)}
+          >
+            <i className="bi bi-eye"></i>
+          </button>
 
-    <button
-      className="btn btn-sm me-2"
-      style={{
-        backgroundColor: "#fff3cd",
-        color: "#ffc107",
-      }}
-      onClick={() => openModal("edit", card)}
-    >
-      <i className="bi bi-pencil-square"></i>
-    </button>
+          <button
+            className="btn btn-sm me-2"
+            style={{ backgroundColor: "#fff3cd", color: "#ffc107" }}
+            onClick={() => openModal("edit", card)}
+          >
+            <i className="bi bi-pencil-square"></i>
+          </button>
 
-    <button
-      className="btn btn-sm"
-      style={{
-        backgroundColor: "#f8d7da",
-        color: "#dc3545",
-      }}
-      onClick={() => handleDelete(card.id)}
-    >
-      <i className="bi bi-trash"></i>
-    </button>
-  </td>
-</tr>
-                ))}
-              </tbody>
+          <button
+            className="btn btn-sm"
+            style={{ backgroundColor: "#f8d7da", color: "#dc3545" }}
+            onClick={() => handleDelete(card.id)}
+          >
+            <i className="bi bi-trash"></i>
+          </button>
+        </td>
+      </tr>
+    ))
+  )}
+</tbody>
             </table>
           </div>
 
